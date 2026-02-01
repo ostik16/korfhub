@@ -1,0 +1,10 @@
+{
+  "matchId": null, // if match is null we can presume that no persistance
+  "period": "1Q", // possible are 1H, 2H, 1Q, 2Q, 3Q, 4Q, GG
+  "period_duration": 600,
+  "score_home": 0,
+  "score_away": 0,
+  "time_remaining": 600,
+  "time_remaining_formatted": "10:00",
+  "time_started_at": null, // will be timestamp if time is running
+}

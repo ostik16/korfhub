@@ -1,0 +1,29 @@
+{
+	"nodes":[
+		{"id":"6c484b2c698e939f","type":"file","file":"docs/Scoreboard UI.md","x":-1080,"y":-1600,"width":300,"height":160,"color":"4"},
+		{"id":"2e489f43cd37cc29","type":"file","file":"docs/Scoreboard server.md","x":-390,"y":-360,"width":300,"height":160,"color":"6"},
+		{"id":"360bb08884d0e562","type":"text","text":"# Persistence\nIn case of outage the current state of the game should be persisted.","x":-390,"y":-100,"width":300,"height":160,"color":"2"},
+		{"id":"51269a8ed62399fd","type":"file","file":"docs/Data server.md","x":640,"y":-1020,"width":300,"height":160,"color":"6"},
+		{"id":"bdfa81b10a3007b1","type":"text","text":"# Database\nPlayers (name, number, ...)\nTeams (name, category, color, ...)\nMatches (home, away, events)","x":640,"y":-560,"width":300,"height":160,"color":"2"},
+		{"id":"840ce82d413cf2ff","type":"text","text":"# CYAN - MIDDLEWARE\n","x":-600,"y":-2000,"width":320,"height":50,"color":"5"},
+		{"id":"fd9a1435dfa0b4c5","type":"text","text":"# GREEN - UI\n","x":-860,"y":-2000,"width":200,"height":50,"color":"4"},
+		{"id":"c89cc71ea3e3cb50","type":"text","text":"# PURPLE - SERVER\n","x":-220,"y":-2000,"width":280,"height":50,"color":"6"},
+		{"id":"b55c7504340bcb9d","type":"text","text":"# ORANGE - STORAGE\n","x":120,"y":-2000,"width":300,"height":50,"color":"2"},
+		{"id":"e881691f30534a05","type":"text","text":"# Scoreboard middleware\nWhen a score increase is received update the scoreboard server. Otherwise handle events\n","x":0,"y":-760,"width":340,"height":180,"color":"5"},
+		{"id":"473f1c2e2f2db896","type":"file","file":"docs/Scoreboard controller UI.md","x":-390,"y":-1120,"width":350,"height":140,"color":"4"},
+		{"id":"25c04e2c2d456050","x":640,"y":-1640,"width":300,"height":160,"color":"4","type":"file","file":"docs/HUB UI.md"}
+	],
+	"edges":[
+		{"id":"0eaee7c9360d65b7","fromNode":"473f1c2e2f2db896","fromSide":"bottom","toNode":"2e489f43cd37cc29","toSide":"top","label":"control request\n"},
+		{"id":"e79667fb5e824b58","fromNode":"473f1c2e2f2db896","fromSide":"bottom","toNode":"e881691f30534a05","toSide":"top","label":"event"},
+		{"id":"1333f44d84fdc194","fromNode":"e881691f30534a05","fromSide":"bottom","toNode":"2e489f43cd37cc29","toSide":"right","label":"increase score"},
+		{"id":"22e29e193c39e2bd","fromNode":"2e489f43cd37cc29","fromSide":"bottom","toNode":"360bb08884d0e562","toSide":"top","fromEnd":"arrow"},
+		{"id":"7d67f320e9749e7a","fromNode":"51269a8ed62399fd","fromSide":"bottom","toNode":"bdfa81b10a3007b1","toSide":"top","label":"update db record"},
+		{"id":"1591fe228b3a894c","fromNode":"2e489f43cd37cc29","fromSide":"left","toNode":"6c484b2c698e939f","toSide":"bottom"},
+		{"id":"b287c0b984d9b807","fromNode":"2e489f43cd37cc29","fromSide":"left","toNode":"473f1c2e2f2db896","toSide":"left","label":"time and score"},
+		{"id":"2e43526bd3210ce4","fromNode":"51269a8ed62399fd","fromSide":"top","toNode":"25c04e2c2d456050","toSide":"bottom"},
+		{"id":"4a4d18b4b2996fa0","fromNode":"51269a8ed62399fd","fromSide":"top","toNode":"473f1c2e2f2db896","toSide":"right","label":"get info about match"},
+		{"id":"d1f6be9747ccbd9c","fromNode":"51269a8ed62399fd","fromSide":"top","toNode":"6c484b2c698e939f","toSide":"right","label":"get info about match"},
+		{"id":"63e6517c353e611f","fromNode":"e881691f30534a05","fromSide":"right","toNode":"51269a8ed62399fd","toSide":"left","label":"create event"}
+	]
+}
