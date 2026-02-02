@@ -5,7 +5,7 @@ const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",
   handler(payload, state) {
     const matchId = Number(payload.id);
-
+    console.log(matchId);
     if (isNaN(matchId)) {
       return state;
     }

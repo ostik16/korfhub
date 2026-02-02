@@ -109,6 +109,30 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
             sharedState,
           );
           break;
+        case ws_message_routes.v1.period_set.ws_message_type:
+          sharedState = ws_message_routes.v1.period_set.handler(
+            payload,
+            sharedState,
+          );
+          break;
+        case ws_message_routes.v1.period_limit.ws_message_type:
+          sharedState = ws_message_routes.v1.period_limit.handler(
+            payload,
+            sharedState,
+          );
+          break;
+        case ws_message_routes.v1.match_set.ws_message_type:
+          sharedState = ws_message_routes.v1.match_set.handler(
+            payload,
+            sharedState,
+          );
+          break;
+        case ws_message_routes.v1.match_info.ws_message_type:
+          sharedState = ws_message_routes.v1.match_info.handler(
+            payload,
+            sharedState,
+          );
+          break;
       }
 
       ws.publish(

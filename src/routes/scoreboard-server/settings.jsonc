@@ -2,8 +2,14 @@
   "matchId": null, // if match is null we can presume that no persistance
   "period": "1Q", // possible are 1H, 2H, 1Q, 2Q, 3Q, 4Q, GG
   "period_duration": 600,
-  "score_home": 0,
-  "score_away": 0,
+  "home_score": 0,
+  "home_name": "HOME",
+  "home_logo": null,
+  "home_colors": "[\"#ff0000\",\"#000000\"]",
+  "away_score": 0,
+  "away_name": "AWAY",
+  "away_logo": null,
+  "away_colors": "[\"#00ff00\",\"#000000\"]",
   "time_remaining": 600,
   "time_remaining_formatted": "10:00",
   "time_started_at": null, // will be timestamp if time is running

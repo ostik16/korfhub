@@ -72,8 +72,8 @@ export function APITester() {
     if (data.type === "INIT" || data.type === "INFO") {
       // console.log(data.state);
       setRemainingTime(data.state.time_remaining_formatted);
-      setHomeScore(data.state.score_home);
-      setAwayScore(data.state.score_away);
+      setHomeScore(data.state.home_score);
+      setAwayScore(data.state.away_score);
     }
   });
 
@@ -122,11 +122,11 @@ export function APITester() {
     <div className="flex flex-col gap-6">
       <div className="flex gap-2 w-full justify-around">
         <span>
-          {homeScore} {state?.score_home}
+          {homeScore} {state?.home_score}
         </span>
         <span>{remainingTime}</span>
         <span>
-          {awayScore} {state?.score_away}
+          {awayScore} {state?.away_score}
         </span>
       </div>
       <Button onClick={startTime}>START</Button>

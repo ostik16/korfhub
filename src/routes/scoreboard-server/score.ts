@@ -9,9 +9,9 @@ const home: SSRoute<{ score: number }> = {
       return state;
     }
 
-    const score_home = Math.max(state.score_home + score, 0);
+    const home_score = Math.max(state.home_score + score, 0);
 
-    return { ...state, score_home } as SSState;
+    return { ...state, home_score } as SSState;
   },
 };
 
@@ -24,9 +24,9 @@ const away: SSRoute<{ score: number }> = {
       return state;
     }
 
-    const score_away = Math.max(state.score_away + score, 0);
+    const away_score = Math.max(state.away_score + score, 0);
 
-    return { ...state, score_away } as SSState;
+    return { ...state, away_score } as SSState;
   },
 };
 
