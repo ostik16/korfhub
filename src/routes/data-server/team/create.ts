@@ -1,13 +1,12 @@
-import { sql, type BunRequest, type Serve } from "bun";
-import { CreateTeamRequestSchema } from "../types";
-import { z } from "zod";
+import { type BunRequest } from "bun";
+import { CreateTeamRequestSchema, type Endpoint } from "../types";
 import { db } from "@/index";
 import { handle_error, prepare_team_response, sanitize_slug } from "../utils";
 
 const url_path = "/api/v1/team/create";
 type path = "/api/v1/team/create";
 
-export const create = {
+export const create: Endpoint = {
   url_path,
   async POST(req: BunRequest<path>) {
     try {
@@ -43,8 +42,9 @@ export const create = {
         )
         .run(query_object);
 
-      const q = db.query("SELECT * FROM teams WHERE id=?");
-      const team = prepare_team_response(q.get(lastInsertRowid));
+      const team = prepare_team_response(
+        db.query("SELECT * FROM teams WHERE id=?").get(lastInsertRowid),
+      );
 
       return Response.json(team, { status: 200 });
     } catch (e) {

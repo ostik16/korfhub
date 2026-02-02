@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Team } from "./types";
+import type { Match, Team } from "./types";
 
 export const sanitize_slug = (str: string) => {
   return (
@@ -19,15 +19,46 @@ export const sanitize_slug = (str: string) => {
   );
 };
 
-export const prepare_team_response = (team: any): Team | null => {
-  if (team === null) return null;
-  return { ...team, colors: JSON.parse(team.colors) };
-};
-
 export const handle_error = (e: any) => {
   console.error(e);
   if (e instanceof z.ZodError) {
     return Response.json({ ...e.issues }, { status: 400 });
   }
   return Response.error();
+};
+
+export const prepare_team_response = (team: any): Team | null => {
+  if (team === null) return null;
+  return { ...team, colors: JSON.parse(team.colors) };
+};
+
+export const prepare_match_response = (match: any): Match | null => {
+  const home_team = prepare_team_response({
+    id: match.home_team_id,
+    slug: match.home_team_slug,
+    name: match.home_team_name,
+    short_name: match.home_team_short_name,
+    colors: match.home_team_colors,
+    logo: match.home_team_logo,
+  });
+  const away_team = prepare_team_response({
+    id: match.away_team_id,
+    slug: match.away_team_slug,
+    name: match.away_team_name,
+    short_name: match.away_team_short_name,
+    colors: match.away_team_colors,
+    logo: match.away_team_logo,
+  });
+
+  if (home_team === null || away_team === null) {
+    return null;
+  }
+
+  return {
+    id: match.id,
+    slug: match.slug,
+    date: match.date,
+    home_team,
+    away_team,
+  };
 };
