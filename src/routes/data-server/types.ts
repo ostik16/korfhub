@@ -6,6 +6,17 @@ export const PaginationSchema = z.object({
   items_per_page: z.number().min(1).max(100).optional().default(10),
 });
 
+export const PlayerId = z.number().brand<"Player">();
+
+export const TeamIdSchema = z.number().brand<"Team">();
+export const TeamSchema = z.object({
+  id: TeamIdSchema,
+  slug: z.string(),
+  name: z.string(),
+  short_name: z.string(),
+  colors: z.array(z.string()).max(2).or(z.string()),
+  logo: z.string().nullable(),
+});
 export const CreateTeamRequestSchema = z.object({
   name: z.string(),
   short_name: z.string().max(3),
@@ -22,6 +33,14 @@ export const ListTeamsRequestSchema = z.object({
   ...PaginationSchema.shape,
 });
 
+export const MatchIdSchema = z.number().brand<"Match">();
+export const MatchSchema = z.object({
+  id: MatchIdSchema,
+  slug: z.string(),
+  date: z.date(),
+  home_team: TeamSchema,
+  away_team: TeamSchema,
+});
 export const CreateMatchRequestSchema = z.object({
   home_team_id: z.string(),
   away_team_id: z.string(),
@@ -48,27 +67,61 @@ export const ListMatchesRequestSchema = z.object({
   ...PaginationSchema.shape,
 });
 
-export const TeamSchema = z.object({
-  id: z.number(),
-  slug: z.string(),
-  name: z.string(),
-  short_name: z.string(),
-  colors: z.array(z.string()).max(2).or(z.string()),
-  logo: z.string().nullable(),
-});
-
-export const MatchSchema = z.object({
-  id: z.number(),
-  slug: z.string(),
+export const EventIdSchema = z.number().brand<"Event">();
+export const EventTypeSchema = z.union([
+  z.literal("score"),
+  z.literal("timeout"),
+  z.literal("substitution"),
+  z.literal("card"),
+]);
+export const ScoreTypeSchema = z.union([
+  z.literal("close"),
+  z.literal("medium"),
+  z.literal("long"),
+  z.literal("runnin-in"),
+  z.literal("penalty"),
+  z.literal("free-throw"),
+]);
+export const EventTypeDefinitionSchema = z.xor([
+  z.object({
+    type: z.literal("score"),
+    team: TeamIdSchema,
+    player: PlayerId,
+    assist: PlayerId,
+    score_type: ScoreTypeSchema,
+  }),
+  z.object({ type: z.literal("timeout"), team: TeamIdSchema }),
+  z.object({
+    type: z.literal("substitution"),
+    team: TeamIdSchema,
+    in: PlayerId,
+    out: PlayerId,
+  }),
+  z.object({ type: z.literal("card"), team: TeamIdSchema, player: PlayerId }),
+  z.object({ type: z.literal("time"), note: z.string() }), // used of halftime, end, gg
+  z.object({ type: z.literal("note"), note: z.string() }),
+]);
+export const EventSchema = z.object({
+  id: EventIdSchema,
+  match: MatchIdSchema,
+  team: TeamIdSchema,
+  type: EventTypeSchema,
+  meta: EventTypeDefinitionSchema.optional(),
+  match_time: z.number(),
   date: z.date(),
-  home_team: TeamSchema,
-  away_team: TeamSchema,
+});
+export const CreateEventRequestSchema = z.object({
+  match: MatchIdSchema,
+  team: TeamIdSchema,
+  type: EventTypeSchema,
+  match_time: z.number(),
 });
 
 export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {
   colors: T;
 };
 export type Match = z.infer<typeof MatchSchema>;
+export type MatchId = z.infer<typeof MatchIdSchema>;
 
 export type Endpoint = {
   readonly url_path: string;

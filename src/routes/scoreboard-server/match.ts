@@ -1,19 +1,31 @@
 import { calculate_remaining_time, format } from "@/lib/utils";
-import type { SSRoute } from "./types";
+import type { SSRoute, SSState } from "./types";
+import { id as match_id } from "@/routes/data-server/match/:id";
+import type { Match } from "../data-server/types";
 
 const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",
-  handler(payload, state) {
-    const matchId = Number(payload.id);
-    console.log(matchId);
-    if (isNaN(matchId)) {
+  async asyncHandler(payload, state) {
+    try {
+      const id = Number(payload.id);
+
+      if (isNaN(id)) {
+        return state;
+      }
+
+      const res = await fetch(
+        process.env.DATASERVICE_URL + "/api/v1/match/" + id,
+      );
+      const match = await res.json();
+
+      return {
+        ...state,
+        ...match,
+        id,
+      };
+    } catch {
       return state;
     }
-
-    return {
-      ...state,
-      matchId,
-    };
   },
 };
 

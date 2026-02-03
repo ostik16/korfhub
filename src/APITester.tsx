@@ -138,7 +138,7 @@ export function APITester() {
         <Label htmlFor="method" className="sr-only">
           Method
         </Label>
-        <Select name="ws-type" defaultValue="time_start">
+        <Select name="ws-type" defaultValue="match_set">
           <SelectTrigger id="method">
             <SelectValue placeholder="WS Type" />
           </SelectTrigger>
@@ -152,6 +152,7 @@ export function APITester() {
             <SelectItem value="score_home">score_home</SelectItem>
             <SelectItem value="score_away">score_away</SelectItem>
             <SelectItem value="score_reset">score_reset</SelectItem>
+            <SelectItem value="match_set">match_set</SelectItem>
           </SelectContent>
         </Select>
         <Label htmlFor="payload" className="sr-only">
@@ -161,7 +162,7 @@ export function APITester() {
           id="payload"
           type="text"
           name="ws-payload"
-          defaultValue="null"
+          defaultValue={`{"id":1}`}
           placeholder="payload"
         />
         <Button type="submit" variant="secondary">

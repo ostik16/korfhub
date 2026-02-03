@@ -1,4 +1,3 @@
-import { Database } from "bun:sqlite";
 import type { SSState } from "./types";
 import config from "./settings.jsonc";
 import { time } from "./time";
@@ -6,7 +5,7 @@ import { score } from "./score";
 import { match } from "./match";
 import { period } from "./period";
 
-export let sharedState = config as SSState;
+export let sharedState: SSState = config;
 
 export const ws_message_routes = {
   v1: {
@@ -49,15 +48,13 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
           state: ws_message_routes.v1.match_info.handler(null, sharedState),
         }),
       );
-    }, 1000 / 10); // 50fps
+    }, 1000 / 10); // 10fps
   },
 
   // Called when the client sends data
-  message(ws, message) {
+  async message(ws, message) {
     try {
       const { type, payload } = JSON.parse(String(message));
-
-      // let updatedState = { ...sharedState };
 
       switch (type) {
         case ws_message_routes.v1.time_start.ws_message_type:
@@ -90,7 +87,6 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
             sharedState,
           );
           break;
-
         case ws_message_routes.v1.score_home.ws_message_type:
           sharedState = ws_message_routes.v1.score_home.handler(
             payload,
@@ -122,7 +118,7 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
           );
           break;
         case ws_message_routes.v1.match_set.ws_message_type:
-          sharedState = ws_message_routes.v1.match_set.handler(
+          sharedState = await ws_message_routes.v1.match_set.asyncHandler(
             payload,
             sharedState,
           );

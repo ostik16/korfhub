@@ -1,18 +1,7 @@
 import type { BunRequest } from "bun";
-import {
-  handle_error,
-  prepare_match_response,
-  prepare_team_response,
-} from "../utils";
+import { handle_error, prepare_match_response } from "../utils";
 import { db } from "@/index";
-import {
-  ReadMatchRequestSchema,
-  ReadMatchResponseSchema,
-  UpdateTeamRequestSchema,
-  type Endpoint,
-  type Match,
-  type Team,
-} from "../types";
+import { ReadMatchResponseSchema, type Endpoint } from "../types";
 
 const url_path = "/api/v1/match/:id";
 type path = "/api/v1/match/:id";

@@ -15,3 +15,12 @@ declare module "*.module.css" {
   const classes: { readonly [key: string]: string };
   export = classes;
 }
+
+declare module "bun" {
+  interface Env {
+    BASE_URL: string;
+    FRONTEND_URL: string;
+    SCOREBOARD_URL: string;
+    DATASERVICE_URL: string;
+  }
+}

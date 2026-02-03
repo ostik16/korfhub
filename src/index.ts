@@ -7,8 +7,6 @@ import {
 } from "./routes/scoreboard-server";
 import { routes } from "./routes/data-server";
 import { Database } from "bun:sqlite";
-import { handle_error } from "./routes/data-server/utils";
-import { id as match_id } from "./routes/data-server/match/:id";
 
 const frontend = serve({
   port: Number(Bun.env.FRONTEND_PORT),
@@ -39,7 +37,7 @@ const frontend = serve({
     // },
   },
 
-  development: process.env.NODE_ENV !== "production" && {
+  development: Bun.env.NODE_ENV !== "production" && {
     // Enable browser hot reloading in development
     hmr: true,
 
@@ -49,8 +47,15 @@ const frontend = serve({
 });
 
 const scoreboard = serve({
-  port: 3001,
+  port: Number(Bun.env.SCOREBOARD_PORT),
+  // hostname: Bun.env.BASE_URL,
   async fetch(req, server) {
+    const url = new URL(req.url);
+    // console.log(url);
+
+    // if (url.pathname === ws_message_routes.v1.match_set.ws_endpoint) {
+    // }
+
     const headers: Bun.HeadersInit = {
       "Access-Control-Allow-Origin": "*",
     };
@@ -63,7 +68,8 @@ const scoreboard = serve({
 });
 
 const data = serve({
-  port: 3002,
+  port: Number(process.env.DATASERVICE_PORT),
+  // hostname: Bun.env.BASE_URL,
   routes,
 });
 
