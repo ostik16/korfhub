@@ -1,11 +1,18 @@
-import { serve, SQL } from "bun";
+import { serve, type BunRequest } from "bun";
 import index from "./index.html";
-import { sharedState, websocket } from "./routes/scoreboard-server";
+import {
+  sharedState,
+  websocket,
+  ws_message_routes,
+} from "./routes/scoreboard-server";
 import { routes } from "./routes/data-server";
 import { Database } from "bun:sqlite";
+import { handle_error } from "./routes/data-server/utils";
+import { id as match_id } from "./routes/data-server/match/:id";
 
 const frontend = serve({
-  port: 3000,
+  port: Number(Bun.env.FRONTEND_PORT),
+  // hostname: Bun.env.BASE_URL,
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
@@ -65,6 +72,6 @@ export const db = new Database("./data/database.sqlite", {
   strict: true,
 });
 
-console.log(`🚀 [${frontend.port}] Frontend running at ${frontend.url}`);
-console.log(`🚀 [${scoreboard.port}] Scoreboard running at ${scoreboard.url}`);
-console.log(`🚀 [${data.port}] Data service running at ${data.url}`);
+console.log(`🚀 [:${frontend.port}] Frontend running at ${frontend.url}`);
+console.log(`🚀 [:${scoreboard.port}] Scoreboard running at ${scoreboard.url}`);
+console.log(`🚀 [:${data.port}] Data service running at ${data.url}`);

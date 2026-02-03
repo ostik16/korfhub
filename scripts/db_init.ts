@@ -20,8 +20,8 @@ db.run(`
   CREATE TABLE IF NOT EXISTS matches (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       slug TEXT NOT NULL UNIQUE,
-      home_team_id TEXT NOT NULL,
-      away_team_id TEXT NOT NULL,
+      home_team_id INTEGER NOT NULL,
+      away_team_id INTEGER NOT NULL,
       date TEXT
   );
 `);
@@ -32,10 +32,10 @@ db.run(`
 db.run(`
   CREATE TABLE IF NOT EXISTS events (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      team TEXT NOT NULL,
-      player TEXT,
+      match INTEGER NOT NULL,
+      team INTEGER,
       type TEXT,
-      timestamp TEXT,
+      match_time INTEGER,
       date TEXT
   );
 `);
