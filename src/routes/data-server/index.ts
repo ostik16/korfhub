@@ -5,6 +5,8 @@ import { create as match_create } from "./match/create";
 import { id as match_id } from "./match/:id";
 import { list as match_list } from "./match/list";
 import { create as event_create } from "./event/create";
+import { match_detail as event_match_detail } from "./event/match-detail";
+import { id as event_id } from "./event/:id";
 
 export const routes = {
   [team_create.url_path]: team_create,
@@ -16,4 +18,6 @@ export const routes = {
   [match_list.url_path]: match_list,
 
   [event_create.url_path]: event_create,
+  [event_match_detail.url_path]: event_match_detail,
+  [event_id.url_path]: event_id,
 };

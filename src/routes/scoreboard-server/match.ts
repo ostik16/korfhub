@@ -1,7 +1,5 @@
 import { calculate_remaining_time, format } from "@/lib/utils";
 import type { SSRoute, SSState } from "./types";
-import { id as match_id } from "@/routes/data-server/match/:id";
-import type { Match } from "../data-server/types";
 
 const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",

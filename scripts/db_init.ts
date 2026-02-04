@@ -23,18 +23,23 @@ db.run(`
       home_team_id INTEGER NOT NULL,
       away_team_id INTEGER NOT NULL,
       date TEXT
+      -- add amount of timeouts and subs available in a match
   );
 `);
-
-// timestamp shuld be play time
-// date is just when it was created
-// only team is required, the idea is to update the entry with more information
+// db.run("DROP TABLE events");
 db.run(`
   CREATE TABLE IF NOT EXISTS events (
+      -- non changeable
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       match INTEGER NOT NULL,
       team INTEGER,
       type TEXT,
+      --
+      player_1 INTEGER,
+      player_2 INTEGER,
+      score_type TEXT,
+      card_type TEXT,
+      note TEXT,
       match_time INTEGER,
       date TEXT
   );

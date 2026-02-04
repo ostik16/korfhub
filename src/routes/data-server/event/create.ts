@@ -40,12 +40,17 @@ export const create: Endpoint = {
       const query_object = {
         ...payload,
         id: null,
+        player_1: null,
+        player_2: null,
+        score_type: null,
+        card_type: null,
+        note: null,
         date: new Date().toISOString(),
       };
 
       const { lastInsertRowid } = db
         .query(
-          "INSERT INTO events VALUES ($id, $match, $team, $type, $match_time, $date)",
+          "INSERT INTO events VALUES ($id, $match, $team, $type, $player_1, $player_2, $score_type, $card_type, $note, $match_time, $date)",
         )
         .run(query_object);
 

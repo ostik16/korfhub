@@ -3,7 +3,7 @@ import type { BunRequest } from "bun";
 
 export const PaginationSchema = z.object({
   page: z.number().min(1).optional().default(1),
-  items_per_page: z.number().min(1).max(100).optional().default(10),
+  items_per_page: z.number().min(1).max(100).optional().default(25),
 });
 
 export const PlayerId = z.number().brand<"Player">();
@@ -73,6 +73,8 @@ export const EventTypeSchema = z.union([
   z.literal("timeout"),
   z.literal("substitution"),
   z.literal("card"),
+  z.literal("time"),
+  z.literal("note"),
 ]);
 export const ScoreTypeSchema = z.union([
   z.literal("close"),
@@ -81,6 +83,12 @@ export const ScoreTypeSchema = z.union([
   z.literal("runnin-in"),
   z.literal("penalty"),
   z.literal("free-throw"),
+]);
+export const CardTypeSchema = z.union([
+  z.literal("yellow"),
+  z.literal("red"),
+  z.literal("green"),
+  z.literal("white"),
 ]);
 export const EventTypeDefinitionSchema = z.xor([
   z.object({
@@ -104,9 +112,13 @@ export const EventTypeDefinitionSchema = z.xor([
 export const EventSchema = z.object({
   id: EventIdSchema,
   match: MatchIdSchema,
-  team: TeamIdSchema,
+  team: TeamSchema.nullable(),
   type: EventTypeSchema,
-  meta: EventTypeDefinitionSchema.optional(),
+  player_1: PlayerId.nullable(),
+  player_2: PlayerId.nullable(),
+  score_type: ScoreTypeSchema.nullable(),
+  card_type: CardTypeSchema.nullable(),
+  note: z.string().nullable(),
   match_time: z.number(),
   date: z.date(),
 });
@@ -116,16 +128,56 @@ export const CreateEventRequestSchema = z.object({
   type: EventTypeSchema,
   match_time: z.number(),
 });
+export const ListMatchEventsRequestSchema = z.object({
+  ...PaginationSchema.shape,
+  match: MatchIdSchema,
+});
+export const UpdateEventRequestSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("score"),
+    score_type: ScoreTypeSchema,
+    player_1: PlayerId.optional().nullable(),
+    player_2: PlayerId.optional().nullable(),
+  }),
+  z.object({
+    type: z.literal("substitution"),
+    player_1: PlayerId,
+    player_2: PlayerId,
+  }),
+  z.object({
+    type: z.literal("card"),
+    player_1: PlayerId,
+    card_type: CardTypeSchema,
+    note: z.string(),
+  }),
+]);
+export const ReadEventResponseSchema = z.object({
+  id: EventIdSchema,
+  match: MatchIdSchema,
+  team: TeamIdSchema,
+  type: EventTypeSchema,
+  player_1: PlayerId.nullable(),
+  player_2: PlayerId.nullable(),
+  score_type: ScoreTypeSchema.nullable(),
+  card_type: CardTypeSchema.nullable(),
+  note: z.string().nullable(),
+  match_time: z.number(),
+  date: z.date(),
+});
 
 export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {
   colors: T;
 };
 export type Match = z.infer<typeof MatchSchema>;
 export type MatchId = z.infer<typeof MatchIdSchema>;
+export type Event = z.infer<typeof EventSchema>;
+
+export type ReadEvent = z.infer<typeof ReadEventResponseSchema>;
 
 export type Endpoint = {
   readonly url_path: string;
   POST?: (req: BunRequest<any>) => Promise<Response>;
   PUT?: (req: BunRequest<any>) => Promise<Response>;
   GET?: (req: BunRequest<any>) => Promise<Response>;
+  DELETE?: (req: BunRequest<any>) => Promise<Response>;
 };

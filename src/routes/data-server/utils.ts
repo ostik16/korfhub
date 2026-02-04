@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Match, Team } from "./types";
+import type { Match, Team, Event } from "./types";
 
 export const sanitize_slug = (str: string) => {
   return (
@@ -60,5 +60,34 @@ export const prepare_match_response = (match: any): Match | null => {
     date: match.date,
     home_team,
     away_team,
+  };
+};
+
+export const prepare_event_response = (event: any): Event | null => {
+  const team = prepare_team_response({
+    id: event.team_id,
+    slug: event.team_slug,
+    name: event.team_name,
+    short_name: event.team_short_name,
+    colors: event.team_colors,
+    logo: event.team_logo,
+  });
+
+  if (team === null) {
+    return null;
+  }
+
+  return {
+    id: event.id,
+    match: event.match,
+    team,
+    player_1: null,
+    player_2: null,
+    score_type: null,
+    card_type: null,
+    note: null,
+    type: event.type,
+    date: event.date,
+    match_time: event.match_time,
   };
 };
