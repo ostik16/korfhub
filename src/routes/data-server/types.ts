@@ -162,7 +162,7 @@ export const ReadEventResponseSchema = z.object({
   card_type: CardTypeSchema.nullable(),
   note: z.string().nullable(),
   match_time: z.number(),
-  date: z.date(),
+  date: z.string(),
 });
 
 export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {
