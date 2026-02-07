@@ -1,6 +1,7 @@
 {
   "id": null, // if match is null we can presume that no persistance
-  "period": "1Q", // possible are 1H, 2H, 1Q, 2Q, 3Q, 4Q, GG
+  "period": 1,
+  "period_count": 4,
   "period_duration": 600,
   "home_score": 0,
   "home_team": {

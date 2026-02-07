@@ -88,13 +88,13 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
           );
           break;
         case ws_message_routes.v1.score_home.ws_message_type:
-          sharedState = ws_message_routes.v1.score_home.handler(
+          sharedState = await ws_message_routes.v1.score_home.asyncHandler(
             payload,
             sharedState,
           );
           break;
         case ws_message_routes.v1.score_away.ws_message_type:
-          sharedState = ws_message_routes.v1.score_away.handler(
+          sharedState = await ws_message_routes.v1.score_away.asyncHandler(
             payload,
             sharedState,
           );

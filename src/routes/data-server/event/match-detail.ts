@@ -42,7 +42,7 @@ export const match_detail: Endpoint = {
       FROM events e
       LEFT JOIN teams t ON e.team = t.id
       WHERE e.match = $match
-      ORDER BY e.match_time ASC LIMIT $limit OFFSET $offset
+      ORDER BY e.match_time DESC LIMIT $limit OFFSET $offset
       `,
       );
 

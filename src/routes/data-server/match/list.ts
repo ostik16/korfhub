@@ -18,7 +18,7 @@ export const list: Endpoint = {
   url_path,
   async POST(req: BunRequest<path>) {
     try {
-      const json = await req.json();
+      const json = req.body ? await req.json() : {};
       const payload = ListMatchesRequestSchema.parse(json);
 
       const query_object = {

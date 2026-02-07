@@ -57,7 +57,7 @@ export const prepare_match_response = (match: any): Match | null => {
   return {
     id: match.id,
     slug: match.slug,
-    date: match.date,
+    date: new Date(match.date),
     home_team,
     away_team,
   };

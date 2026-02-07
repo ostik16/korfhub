@@ -1,13 +1,14 @@
 import type { SSRoute } from "./types";
 
-const set: SSRoute<{ name: string }> = {
+const set: SSRoute<{ period: number; total?: number }> = {
   ws_message_type: "period_set",
   handler(payload, state) {
-    const period = payload.name;
+    const { period, total } = payload;
 
     return {
       ...state,
       period,
+      period_count: total ?? state.period_count,
     };
   },
 };

@@ -6,47 +6,54 @@ import PV from "./pages/scoreboard/pv";
 import Index from "./pages";
 import { useLocation } from "react-router";
 import { ws_message_routes } from "./routes/scoreboard-server";
+import Controller from "./pages/controller";
+import BasicController from "./pages/controller/basic";
+import AdvancedController from "./pages/controller/advanced";
+import EventController from "./pages/controller/event";
+import ControlsNavigation from "./pages/controller/navigation";
 
-const contextState: { ws: WebSocket; state: SSState | null } = {
+type WebSocketControls = {
+  // webSocket: WebSocket;
+  startTime: () => void;
+  stopTime: () => void;
+  resetTime: () => void;
+  setTime: (time: number) => void;
+  adjustTime: (time: number) => void;
+
+  setPeriod: (name: string) => void;
+  setPeriodLimit: (time: number) => void;
+
+  setHomeScore: (score: number) => void;
+  setAwayScore: (score: number) => void;
+  resetScore: () => void;
+
+  setMatch: (id: number) => void;
+};
+
+const contextState: {
+  ws: WebSocket;
+  state: SSState | null;
+  webSocketControls: WebSocketControls | null;
+} = {
   ws: new WebSocket("ws://localhost:3001"),
   state: null,
+  webSocketControls: null,
 };
 export const GlobalContext = createContext(contextState);
 
 export function App() {
   let location = useLocation();
   const [state, setState] = useState<SSState | null>(null);
-  const [gameId, setGameId] = useState<number | null>(7);
   const [webSocket, setWebSocket] = useState<WebSocket>(contextState.ws);
 
   useEffect(() => {
-    // console.log(window.location);
     setWebSocket(new WebSocket(`ws://${window.location.hostname}:3001`));
   }, []);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     // fetch(
-  //     //   `http://${window.location.hostname}:3001${ws_message_routes.v1.match_set.ws_endpoint}`,
-  //     // );
-  //     webSocket.send(
-  //       JSON.stringify({
-  //         type: ws_message_routes.v1.match_set.ws_message_type,
-  //         payload: { id: gameId },
-  //       }),
-  //     );
-  //   }, 1000);
-  // }, [gameId]);
 
   webSocket.addEventListener("message", (event) => {
     const data = JSON.parse(event.data);
 
     if (data.type === "INIT" || data.type === "INFO") {
-      // console.log(data.state);
-      // setRemainingTime(data.state.time_remaining_formatted);
-      // setHomeScore(data.state.score_home);
-      // setAwayScore(data.state.score_away);
-
       const state: SSState = {
         ...data.state,
       };
@@ -55,10 +62,109 @@ export function App() {
     }
   });
 
+  const webSocketControls = {
+    startTime: () => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.time_start.ws_message_type,
+          payload: null,
+        }),
+      );
+    },
+    stopTime: () => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.time_stop.ws_message_type,
+          payload: null,
+        }),
+      );
+    },
+    resetTime: () => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.time_reset.ws_message_type,
+          payload: null,
+        }),
+      );
+    },
+    setTime: (time: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.time_set.ws_message_type,
+          payload: { time },
+        }),
+      );
+    },
+    adjustTime: (time: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.time_adjust.ws_message_type,
+          payload: { time },
+        }),
+      );
+    },
+    setPeriod: (name: string) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.period_set.ws_message_type,
+          payload: { name },
+        }),
+      );
+    },
+    setPeriodLimit: (time: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.period_limit.ws_message_type,
+          payload: { time },
+        }),
+      );
+    },
+    setHomeScore: (score: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.score_home.ws_message_type,
+          payload: { score },
+        }),
+      );
+    },
+    setAwayScore: (score: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.score_away.ws_message_type,
+          payload: { score },
+        }),
+      );
+    },
+    resetScore: () => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.score_reset.ws_message_type,
+          payload: null,
+        }),
+      );
+    },
+    setMatch: (id: number) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.match_set.ws_message_type,
+          payload: { id },
+        }),
+      );
+    },
+  };
+
   return (
-    <GlobalContext value={{ ...contextState, state, ws: webSocket }}>
+    <GlobalContext
+      value={{ ...contextState, state, ws: webSocket, webSocketControls }}
+    >
       <Routes>
         <Route index element={<Index />} />
+        <Route path="controller" element={<Controller />}>
+          <Route index element={<ControlsNavigation />} />
+          <Route path="basic" element={<BasicController />} />
+          <Route path="advanced" element={<AdvancedController />} />
+          <Route path="event" element={<EventController />} />
+        </Route>
         <Route path="scoreboard">
           <Route path="pv" element={<PV />} />
         </Route>

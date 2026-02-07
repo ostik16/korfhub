@@ -14,6 +14,8 @@ const frontend = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
+    ...routes,
+
     // "/api/hello": {
     //   async GET(req) {
     //     return Response.json({
@@ -67,11 +69,11 @@ const scoreboard = serve({
   websocket,
 });
 
-const data = serve({
-  port: Number(process.env.DATASERVICE_PORT),
-  // hostname: Bun.env.BASE_URL,
-  routes,
-});
+// const data = serve({
+//   port: Number(process.env.DATASERVICE_PORT),
+//   // hostname: Bun.env.BASE_URL,
+//   routes,
+// });
 
 export const db = new Database("./data/database.sqlite", {
   create: true,
@@ -80,4 +82,4 @@ export const db = new Database("./data/database.sqlite", {
 
 console.log(`🚀 [:${frontend.port}] Frontend running at ${frontend.url}`);
 console.log(`🚀 [:${scoreboard.port}] Scoreboard running at ${scoreboard.url}`);
-console.log(`🚀 [:${data.port}] Data service running at ${data.url}`);
+// console.log(`🚀 [:${data.port}] Data service running at ${data.url}`);

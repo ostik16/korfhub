@@ -1,8 +1,22 @@
+import z from "zod";
 import type { Team } from "../data-server/types";
+
+export const PeriodTypeSchema = z.enum([
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4",
+  "H1",
+  "H2",
+  "GG",
+]);
+
+export type PeriodType = z.infer<typeof PeriodTypeSchema>;
 
 export type SSState = {
   id: number | null;
-  period: string;
+  period: number;
+  period_count: number;
   period_duration: number;
   home_team: Team;
   home_score: number;
