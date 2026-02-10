@@ -23,3 +23,13 @@ export const calculate_remaining_time = (state: SSState, toFixed = 2) => {
   const time_remaining = Math.max(calculated_time, 0); // do not go bellow 0
   return time_remaining;
 };
+
+export const calculate_match_time = (state: SSState) => {
+  const elapsed = (
+    state.period_duration -
+    state.time_remaining +
+    state.period_duration * (state.period - 1)
+  ).toFixed(1);
+
+  return Number(elapsed);
+};

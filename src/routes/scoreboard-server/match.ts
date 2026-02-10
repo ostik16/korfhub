@@ -1,5 +1,6 @@
 import { calculate_remaining_time, format } from "@/lib/utils";
 import type { SSRoute, SSState } from "./types";
+import type { Event, Match } from "../data-server/types";
 
 const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",
@@ -11,14 +12,57 @@ const set: SSRoute<{ id: number }> = {
         return state;
       }
 
-      const res = await fetch(
+      const match_req = await fetch(
         process.env.DATASERVICE_URL + "/api/v1/match/" + id,
       );
-      const match = await res.json();
+      const match: Match = await match_req.json();
+
+      const events_req = await fetch(
+        process.env.DATASERVICE_URL + "/api/v1/event/match-detail",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            match: id,
+          }),
+        },
+      );
+      const events: Event[] = await events_req.json();
+
+      let home_score = 0;
+      let away_score = 0;
+      let time_remaining = state.period_duration;
+      let period = 1;
+
+      const home_team_id = match.home_team.id;
+      const away_team_id = match.away_team.id;
+
+      events.forEach((event, index) => {
+        if (index === 0) {
+          // this should be latest event by game time
+          period = Math.ceil(event.match_time / state.period_duration);
+          time_remaining =
+            state.period_duration - (event.match_time % state.period_duration);
+        }
+
+        if (event.type !== "score") {
+          return;
+        }
+
+        if (event.team?.id === home_team_id) {
+          home_score++;
+        }
+        if (event.team?.id === away_team_id) {
+          away_score++;
+        }
+      });
 
       return {
         ...state,
         ...match,
+        home_score,
+        away_score,
+        period,
+        time_remaining,
         id,
       };
     } catch {

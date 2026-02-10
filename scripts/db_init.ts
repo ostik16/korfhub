@@ -17,10 +17,8 @@ db.run(`
     name TEXT NOT NULL,
     short_name TEXT NOT NULL,
     logo TEXT,
-    colors TEXT CHECK(json_valid(colors)),
     color_1 TEXT,
     color_2 TEXT
-    -- switch to new color storing schema
   );
 `);
 
@@ -50,7 +48,6 @@ db.run(`
 `);
 db.run(`
   CREATE TABLE IF NOT EXISTS events (
-    -- non changeable
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     match INTEGER NOT NULL,
     team INTEGER,
@@ -63,5 +60,10 @@ db.run(`
     note TEXT,
     match_time INTEGER,
     date TEXT
+    -- track statistics in the same table as events
+    -- will have to decide what events are showable with a flag
+    -- events without flag are just a statistic
+    -- this means the event type has to be extended
+    -- indexes should be created
   );
 `);

@@ -80,6 +80,8 @@ export const db = new Database("./data/database.sqlite", {
   strict: true,
 });
 
-console.log(`🚀 [:${frontend.port}] Frontend running at ${frontend.url}`);
+console.log(
+  `🚀 [:${frontend.port}] Frontend and Data server running at ${frontend.url}`,
+);
 console.log(`🚀 [:${scoreboard.port}] Scoreboard running at ${scoreboard.url}`);
 // console.log(`🚀 [:${data.port}] Data service running at ${data.url}`);

@@ -30,9 +30,9 @@ export const id: Endpoint = {
   async PUT(req: BunRequest<path>) {
     try {
       const id = req.params.id;
-      const team = db
-        .query<Team<string> | null, string>("SELECT * FROM teams WHERE id=?")
-        .get(id);
+      const team = prepare_team_response(
+        db.query<Team | null, string>("SELECT * FROM teams WHERE id=?").get(id),
+      );
       const json = await req.json();
       const payload = UpdateTeamRequestSchema.parse(json);
 
@@ -45,7 +45,8 @@ export const id: Endpoint = {
         name: payload.name ?? team.name,
         short_name: payload.short_name ?? team.short_name,
         logo: payload.logo ?? team.logo,
-        colors: payload.colors ? JSON.stringify(payload.colors) : team.colors,
+        color_1: payload.color_1 ?? team.colors[0] ?? null,
+        color_2: payload.color_2 ?? team.colors[1] ?? null,
       };
 
       db.query(
@@ -53,7 +54,8 @@ export const id: Endpoint = {
           SET name=$name,
             short_name=$short_name,
             logo=$logo,
-            colors=$colors
+            color_1=$color_1,
+            color_2=$color_2
           WHERE id=$id`,
       ).run(query_object);
 

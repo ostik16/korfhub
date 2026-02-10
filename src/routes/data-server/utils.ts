@@ -29,7 +29,12 @@ export const handle_error = (e: any) => {
 
 export const prepare_team_response = (team: any): Team | null => {
   if (team === null) return null;
-  return { ...team, colors: JSON.parse(team.colors) };
+  return {
+    ...team,
+    colors: [team.color_1, team.color_2],
+    color_1: undefined,
+    color_2: undefined,
+  };
 };
 
 export const prepare_match_response = (match: any): Match | null => {
@@ -38,7 +43,8 @@ export const prepare_match_response = (match: any): Match | null => {
     slug: match.home_team_slug,
     name: match.home_team_name,
     short_name: match.home_team_short_name,
-    colors: match.home_team_colors,
+    color_1: match.home_team_color_1,
+    color_2: match.home_team_color_2,
     logo: match.home_team_logo,
   });
   const away_team = prepare_team_response({
@@ -46,7 +52,8 @@ export const prepare_match_response = (match: any): Match | null => {
     slug: match.away_team_slug,
     name: match.away_team_name,
     short_name: match.away_team_short_name,
-    colors: match.away_team_colors,
+    color_1: match.away_team_color_1,
+    color_2: match.away_team_color_2,
     logo: match.away_team_logo,
   });
 
@@ -54,10 +61,19 @@ export const prepare_match_response = (match: any): Match | null => {
     return null;
   }
 
+  const home_team_roster = match.home_team_roster
+    ? JSON.parse(match.home_team_roster)
+    : null;
+  const away_team_roster = match.away_team_roster
+    ? JSON.parse(match.away_team_roster)
+    : null;
+
   return {
     id: match.id,
     slug: match.slug,
     date: new Date(match.date),
+    home_team_roster,
+    away_team_roster,
     home_team,
     away_team,
   };
@@ -69,7 +85,8 @@ export const prepare_event_response = (event: any): Event | null => {
     slug: event.team_slug,
     name: event.team_name,
     short_name: event.team_short_name,
-    colors: event.team_colors,
+    color_1: event.team_color_1,
+    color_2: event.team_color_2,
     logo: event.team_logo,
   });
 

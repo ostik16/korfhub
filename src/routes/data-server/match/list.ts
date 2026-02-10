@@ -36,13 +36,15 @@ export const list: Endpoint = {
           home.slug AS home_team_slug,
           home.name AS home_team_name,
           home.short_name AS home_team_short_name,
-          home.colors AS home_team_colors,
+          home.color_1 AS home_team_color_1,
+          home.color_2 AS home_team_color_2,
           home.logo AS home_team_logo,
           away.id AS away_team_id,
           away.slug AS away_team_slug,
           away.name AS away_team_name,
           away.short_name AS away_team_short_name,
-          away.colors AS away_team_colors,
+          away.color_1 AS away_team_color_1,
+          away.color_2 AS away_team_color_2,
           away.logo AS away_team_logo
       FROM matches m
       LEFT JOIN teams home ON m.home_team_id = home.id

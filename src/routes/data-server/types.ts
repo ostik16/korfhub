@@ -26,8 +26,9 @@ export const CreateTeamRequestSchema = z.object({
 export const UpdateTeamRequestSchema = z.object({
   name: z.string().optional(),
   short_name: z.string().max(3).optional(),
-  colors: z.array(z.string()).max(2).optional(),
   logo: z.string().nullable().optional(),
+  color_1: z.string().optional(),
+  color_2: z.string().optional(),
 });
 export const ListTeamsRequestSchema = z.object({
   ...PaginationSchema.shape,
@@ -39,7 +40,9 @@ export const MatchSchema = z.object({
   slug: z.string(),
   date: z.date(),
   home_team: TeamSchema,
+  home_team_roster: z.object(),
   away_team: TeamSchema,
+  away_team_roster: z.object(),
 });
 export const CreateMatchRequestSchema = z.object({
   home_team_id: z.string(),
@@ -53,13 +56,17 @@ export const ReadMatchResponseSchema = z.object({
   home_team_slug: z.string(),
   home_team_name: z.string(),
   home_team_short_name: z.string(),
-  home_team_colors: z.string(),
+  home_team_color_1: z.string(),
+  home_team_color_2: z.string(),
+  home_team_roster: z.string().nullable(),
   home_team_logo: z.string().nullable(),
   away_team_id: z.number(),
   away_team_slug: z.string(),
   away_team_name: z.string(),
   away_team_short_name: z.string(),
-  away_team_colors: z.string(),
+  away_team_color_1: z.string(),
+  away_team_color_2: z.string(),
+  away_team_roster: z.string().nullable(),
   away_team_logo: z.string().nullable(),
   date: z.string().transform((v) => new Date(v)),
 });
@@ -126,12 +133,17 @@ export const CreateEventRequestSchema = z.object({
   match: MatchIdSchema,
   team: TeamIdSchema,
   type: EventTypeSchema,
+  score_type: ScoreTypeSchema.optional().nullable(),
+  card_type: CardTypeSchema.optional().nullable(),
   match_time: z.number(),
 });
 export const ListMatchEventsRequestSchema = z.object({
   ...PaginationSchema.shape,
   match: MatchIdSchema,
 });
+export type ListMatchEventsRequest = z.infer<
+  typeof ListMatchEventsRequestSchema
+>;
 export const UpdateEventRequestSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("score"),
@@ -171,8 +183,14 @@ export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {
 export type Match = z.infer<typeof MatchSchema>;
 export type MatchId = z.infer<typeof MatchIdSchema>;
 export type Event = z.infer<typeof EventSchema>;
+export type EventId = z.infer<typeof EventIdSchema>;
 
 export type ReadEvent = z.infer<typeof ReadEventResponseSchema>;
+export type CreateEvent = z.infer<typeof CreateEventRequestSchema>;
+
+export type ScoreType = z.infer<typeof ScoreTypeSchema>;
+export type CardType = z.infer<typeof CardTypeSchema>;
+export type EventType = z.infer<typeof EventTypeSchema>;
 
 export type Endpoint = {
   readonly url_path: string;

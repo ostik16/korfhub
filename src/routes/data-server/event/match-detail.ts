@@ -37,7 +37,8 @@ export const match_detail: Endpoint = {
           t.slug AS team_slug,
           t.name AS team_name,
           t.short_name AS team_short_name,
-          t.colors AS team_colors,
+          t.color_1 AS team_color_1,
+          t.color_2 AS team_color_2,
           t.logo AS team_logo
       FROM events e
       LEFT JOIN teams t ON e.team = t.id

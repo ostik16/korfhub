@@ -42,11 +42,24 @@ export const create: Endpoint = {
         id: null,
         slug,
         date: date.toISOString(),
+        home_team_roster: null,
+        away_team_roster: null,
+        completed: 0,
       };
 
       const { lastInsertRowid } = db
         .query(
-          "INSERT INTO matches VALUES ($id, $slug, $home_team_id, $away_team_id, $date)",
+          `INSERT INTO matches
+            VALUES (
+              $id,
+              $slug,
+              $home_team_id,
+              $away_team_id,
+              $home_team_roster,
+              $away_team_roster,
+              $date,
+              $completed
+            )`,
         )
         .run(query_object);
 

@@ -56,4 +56,19 @@ export const id: Endpoint = {
       return handle_error(e);
     }
   },
+  async DELETE(req: BunRequest<path>) {
+    try {
+      const id = Number(req.params.id);
+
+      const delete_query = db.query<ReadEvent, number>(
+        "DELETE FROM events WHERE id=?",
+      );
+
+      delete_query.get(id);
+
+      return Response.json(null, { status: 200 });
+    } catch (e) {
+      return handle_error(e);
+    }
+  },
 };

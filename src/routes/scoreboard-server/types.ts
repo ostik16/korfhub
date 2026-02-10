@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Team } from "../data-server/types";
+import type { MatchId, Team } from "../data-server/types";
 
 export const PeriodTypeSchema = z.enum([
   "Q1",
@@ -14,7 +14,7 @@ export const PeriodTypeSchema = z.enum([
 export type PeriodType = z.infer<typeof PeriodTypeSchema>;
 
 export type SSState = {
-  id: number | null;
+  id: MatchId | null;
   period: number;
   period_count: number;
   period_duration: number;

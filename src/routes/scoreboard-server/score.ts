@@ -10,25 +10,25 @@ const home: SSRoute<{ score: number }> = {
       return state;
     }
 
-    if (score > 0) {
-      const elapsed_time = (
-        state.period_duration -
-        calculate_remaining_time(state) +
-        state.period_duration * (state.period - 1)
-      ).toFixed(1);
+    // if (score > 0) {
+    //   const elapsed_time = (
+    //     state.period_duration -
+    //     calculate_remaining_time(state) +
+    //     state.period_duration * (state.period - 1)
+    //   ).toFixed(1);
 
-      const event_info = JSON.stringify({
-        match: state.id,
-        team: state.home_team.id,
-        match_time: Number(elapsed_time),
-        type: "score",
-      });
+    //   const event_info = JSON.stringify({
+    //     match: state.id,
+    //     team: state.home_team.id,
+    //     match_time: Number(elapsed_time),
+    //     type: "score",
+    //   });
 
-      await fetch(process.env.DATASERVICE_URL + "/api/v1/event/create", {
-        method: "POST",
-        body: event_info,
-      });
-    }
+    //   await fetch(process.env.DATASERVICE_URL + "/api/v1/event/create", {
+    //     method: "POST",
+    //     body: event_info,
+    //   });
+    // }
 
     const home_score = Math.max(state.home_score + score, 0);
 
@@ -45,25 +45,25 @@ const away: SSRoute<{ score: number }> = {
       return state;
     }
 
-    if (score > 0) {
-      const elapsed_time = (
-        state.period_duration -
-        state.time_remaining +
-        state.period_duration * (state.period - 1)
-      ).toFixed(1);
+    // if (score > 0) {
+    //   const elapsed_time = (
+    //     state.period_duration -
+    //     state.time_remaining +
+    //     state.period_duration * (state.period - 1)
+    //   ).toFixed(1);
 
-      const event_info = JSON.stringify({
-        match: state.id,
-        team: state.away_team.id,
-        match_time: Number(elapsed_time),
-        type: "score",
-      });
+    //   const event_info = JSON.stringify({
+    //     match: state.id,
+    //     team: state.away_team.id,
+    //     match_time: Number(elapsed_time),
+    //     type: "score",
+    //   });
 
-      await fetch(process.env.DATASERVICE_URL + "/api/v1/event/create", {
-        method: "POST",
-        body: event_info,
-      });
-    }
+    //   await fetch(process.env.DATASERVICE_URL + "/api/v1/event/create", {
+    //     method: "POST",
+    //     body: event_info,
+    //   });
+    // }
 
     const away_score = Math.max(state.away_score + score, 0);
 

@@ -11,6 +11,7 @@ import BasicController from "./pages/controller/basic";
 import AdvancedController from "./pages/controller/advanced";
 import EventController from "./pages/controller/event";
 import ControlsNavigation from "./pages/controller/navigation";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 type WebSocketControls = {
   // webSocket: WebSocket;
@@ -156,22 +157,24 @@ export function App() {
   };
 
   return (
-    <GlobalContext
-      value={{ ...contextState, state, ws: webSocket, webSocketControls }}
-    >
-      <Routes>
-        <Route index element={<Index />} />
-        <Route path="controller" element={<Controller />}>
-          <Route index element={<ControlsNavigation />} />
-          <Route path="basic" element={<BasicController />} />
-          <Route path="advanced" element={<AdvancedController />} />
-          <Route path="event" element={<EventController />} />
-        </Route>
-        <Route path="scoreboard">
-          <Route path="pv" element={<PV />} />
-        </Route>
-      </Routes>
-    </GlobalContext>
+    <TooltipProvider>
+      <GlobalContext
+        value={{ ...contextState, state, ws: webSocket, webSocketControls }}
+      >
+        <Routes>
+          <Route index element={<Index />} />
+          <Route path="controller" element={<Controller />}>
+            <Route index element={<ControlsNavigation />} />
+            <Route path="basic" element={<BasicController />} />
+            <Route path="advanced" element={<AdvancedController />} />
+            <Route path="event" element={<EventController />} />
+          </Route>
+          <Route path="scoreboard">
+            <Route path="pv" element={<PV />} />
+          </Route>
+        </Routes>
+      </GlobalContext>
+    </TooltipProvider>
   );
 }
 

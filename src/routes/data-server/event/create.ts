@@ -42,7 +42,7 @@ export const create: Endpoint = {
         id: null,
         player_1: null,
         player_2: null,
-        score_type: null,
+        score_type: payload.score_type ?? null,
         card_type: null,
         note: null,
         date: new Date().toISOString(),
