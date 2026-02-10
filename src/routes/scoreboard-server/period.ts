@@ -7,7 +7,7 @@ const set: SSRoute<{ period: number; total?: number }> = {
 
     return {
       ...state,
-      period,
+      period: period ?? state.period,
       period_count: total ?? state.period_count,
     };
   },

@@ -20,7 +20,7 @@ type WebSocketControls = {
   setTime: (time: number) => void;
   adjustTime: (time: number) => void;
 
-  setPeriod: (name: string) => void;
+  setPeriod: ({ period, total }: { period?: number; total?: number }) => void;
   setPeriodLimit: (time: number) => void;
 
   setHomeScore: (score: number) => void;
@@ -46,23 +46,25 @@ export function App() {
   const [state, setState] = useState<SSState | null>(null);
   const [webSocket, setWebSocket] = useState<WebSocket>(contextState.ws);
 
+  // possible memory leak, improve how a websocket connection is consumed
+
   useEffect(() => {
-    setWebSocket(new WebSocket(`ws://${window.location.hostname}:3001`));
+    const socket = new WebSocket(`ws://${window.location.hostname}:3001`);
+    setWebSocket(socket);
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "INIT" || data.type === "INFO") {
+        const state: SSState = {
+          ...data.state,
+        };
+
+        setState(state);
+      }
+    });
   }, []);
 
-  webSocket.addEventListener("message", (event) => {
-    const data = JSON.parse(event.data);
-
-    if (data.type === "INIT" || data.type === "INFO") {
-      const state: SSState = {
-        ...data.state,
-      };
-
-      setState(state);
-    }
-  });
-
-  const webSocketControls = {
+  const webSocketControls: WebSocketControls = {
     startTime: () => {
       webSocket.send(
         JSON.stringify({
@@ -87,7 +89,7 @@ export function App() {
         }),
       );
     },
-    setTime: (time: number) => {
+    setTime: (time) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.time_set.ws_message_type,
@@ -103,15 +105,15 @@ export function App() {
         }),
       );
     },
-    setPeriod: (name: string) => {
+    setPeriod: ({ period, total }) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.period_set.ws_message_type,
-          payload: { name },
+          payload: { period, total },
         }),
       );
     },
-    setPeriodLimit: (time: number) => {
+    setPeriodLimit: (time) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.period_limit.ws_message_type,
@@ -119,7 +121,7 @@ export function App() {
         }),
       );
     },
-    setHomeScore: (score: number) => {
+    setHomeScore: (score) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.score_home.ws_message_type,
@@ -127,7 +129,7 @@ export function App() {
         }),
       );
     },
-    setAwayScore: (score: number) => {
+    setAwayScore: (score) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.score_away.ws_message_type,
@@ -143,7 +145,7 @@ export function App() {
         }),
       );
     },
-    setMatch: (id: number) => {
+    setMatch: (id) => {
       webSocket.send(
         JSON.stringify({
           type: ws_message_routes.v1.match_set.ws_message_type,

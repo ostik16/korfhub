@@ -1,3 +1,4 @@
+import { calculate_remaining_time } from "@/lib/utils";
 import type { SSRoute, SSState } from "./types";
 
 const home: SSRoute<{ score: number }> = {
@@ -12,7 +13,7 @@ const home: SSRoute<{ score: number }> = {
     if (score > 0) {
       const elapsed_time = (
         state.period_duration -
-        state.time_remaining +
+        calculate_remaining_time(state) +
         state.period_duration * (state.period - 1)
       ).toFixed(1);
 

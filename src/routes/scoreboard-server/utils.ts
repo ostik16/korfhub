@@ -28,6 +28,8 @@ export const getPeriodName = (period: number, periodCount: number) => {
         return "Penalty Shootout";
     }
   }
+
+  return period.toString();
 };
 
 // export const getPeriodCount = (period: string) => {

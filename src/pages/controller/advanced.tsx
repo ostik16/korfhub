@@ -12,7 +12,17 @@ import {
 import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp, ClockPlus, Space } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ChevronDown,
+  ChevronUp,
+  ClockPlus,
+  Minus,
+  Plus,
+  RectangleVertical,
+  Space,
+  Timer,
+} from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import {
   DropdownMenu,
@@ -57,6 +67,7 @@ import { fetchAllMatches } from "@/services/match";
 import { match } from "@/routes/scoreboard-server/match";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { getPeriodName } from "@/routes/scoreboard-server/utils";
 
 const formSchema = z.object({ match: z.number() });
 
@@ -67,7 +78,7 @@ const AdvancedController = () => {
   const [matchList, setMatchList] = useState<Match[]>([]);
 
   const form = useForm({
-    defaultValues: { match: matchList[0]?.slug },
+    defaultValues: { match: matchList[0]?.id },
   });
 
   useEffect(() => {
@@ -96,7 +107,11 @@ const AdvancedController = () => {
   }
 
   function handleChangePeriod(period: string) {
-    webSocketControls?.setPeriod(period);
+    webSocketControls?.setPeriod({ period: Number(period) });
+  }
+
+  function handleChangePeriodCount(count: string) {
+    webSocketControls?.setPeriod({ total: Number(count) });
   }
 
   function handleChangeHomeScore(score: number) {
@@ -132,7 +147,9 @@ const AdvancedController = () => {
                 {state?.time_remaining_formatted}
               </CardTitle>
               <CardAction>
-                <Badge variant="secondary">{state?.period}</Badge>
+                <Badge variant="secondary">
+                  {getPeriodName(state?.period ?? 1, state?.period_count ?? 2)}
+                </Badge>
               </CardAction>
             </CardHeader>
             <CardContent>
@@ -147,8 +164,8 @@ const AdvancedController = () => {
             </CardContent>
             <CardContent>
               {/*
-              add timeout for the tip so that it disappears when used or after some time
-              also hide when the device is a mobile phone or similar without a keyboard
+                add timeout for the tip so that it disappears when used or after some time
+                also hide when the device is a mobile phone or similar without a keyboard
               */}
               <span className="text-gray-500">
                 Tip: you can press{" "}
@@ -181,37 +198,67 @@ const AdvancedController = () => {
                       </DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
                         <DropdownMenuSubContent>
+                          {/*
+                            adjust the options based on the number of periods
+                            add select for period count
+                          */}
                           <DropdownMenuRadioGroup
-                            value={state?.period.toString()}
+                            value={state?.period?.toString() ?? "1"}
                             onValueChange={handleChangePeriod}
                           >
-                            <DropdownMenuRadioItem value="Q1">
-                              Q1
+                            <DropdownMenuLabel>
+                              Current Period
+                            </DropdownMenuLabel>
+                            {state?.period_count === 4 && (
+                              <>
+                                <DropdownMenuRadioItem value="1">
+                                  Q1
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="2">
+                                  Q2
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="3">
+                                  Q3
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="4">
+                                  Q4
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="5">
+                                  GG
+                                </DropdownMenuRadioItem>
+                              </>
+                            )}
+                            {state?.period_count === 2 && (
+                              <>
+                                <DropdownMenuRadioItem value="1">
+                                  H1
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="2">
+                                  H2
+                                </DropdownMenuRadioItem>
+                                <DropdownMenuRadioItem value="3">
+                                  GG
+                                </DropdownMenuRadioItem>
+                              </>
+                            )}
+                          </DropdownMenuRadioGroup>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuRadioGroup
+                            value={state?.period_count?.toString() ?? "4"}
+                            onValueChange={handleChangePeriodCount}
+                          >
+                            <DropdownMenuLabel>Period Count</DropdownMenuLabel>
+                            <DropdownMenuRadioItem value="2">
+                              2 periods (H1, H2)
                             </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Q2">
-                              Q2
+                            <DropdownMenuRadioItem value="4">
+                              4 periods (Q1, Q2, Q3, Q4)
                             </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Q3">
-                              Q3
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Q4">
-                              Q4
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="H1">
-                              H1
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="H2">
-                              H2
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="GG">
-                              GG
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>More...</DropdownMenuItem>
                           </DropdownMenuRadioGroup>
                         </DropdownMenuSubContent>
                       </DropdownMenuPortal>
                     </DropdownMenuSub>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setIsMatchModalOpen(true)}>
                       Set Match
                     </DropdownMenuItem>
@@ -268,7 +315,7 @@ const AdvancedController = () => {
       </div>*/}
 
         <div
-          className="col-span-2 grid grid-cols-2 gap-8"
+          className="col-span-2 grid grid-cols-2 gap-8 w-200"
           style={
             {
               "--home-gradient": `90deg,${state?.home_team.colors[0]},${state?.home_team.colors[1]}`,
@@ -276,7 +323,7 @@ const AdvancedController = () => {
             } as React.CSSProperties
           }
         >
-          <div className="flex flex-col gap-4">
+          <div>
             <div
               id="home-color-strip"
               className={cn("bg-linear-(--home-gradient) h-1 rounded-sm")}
@@ -284,35 +331,120 @@ const AdvancedController = () => {
             <span className="text-2xl text-center">
               {state?.home_team.name}
             </span>
-            <div className="flex flex-col items-center gap-1">
-              <Button
-                onClick={() => handleChangeHomeScore(1)}
-                variant="outline"
-                className="w-25"
-              >
-                <ChevronUp />
-              </Button>
-              <Card className="@container/card inline p-6 text-4xl w-25 text-center">
-                {state?.home_score}
-              </Card>
-              <Button
-                onClick={() => handleChangeHomeScore(-1)}
-                variant="outline"
-                className="w-25"
-              >
-                <ChevronDown />
-              </Button>
+
+            <div className="flex w-full py-4 gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                >
+                  <Timer />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 w-25 h-25 text-center"
+                  onClick={() => handleChangeHomeScore(1)}
+                >
+                  <Plus />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                >
+                  <RectangleVertical />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                  onClick={() => handleChangeHomeScore(-1)}
+                >
+                  <Minus />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-full h-25 text-center col-span-2"
+                >
+                  <ArrowLeftRight />
+                </Button>
+              </div>
+              <div className="flex flex-col">
+                <div className="flex flex-col items-center gap-1">
+                  <Card className="@container/card inline p-6 text-4xl w-36 text-center">
+                    {state?.home_score}
+                  </Card>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div>
             <div
               id="away-color-strip"
-              className={cn(
-                "bg-linear-(--away-gradient) h-1 rounded-sm",
-                `from-[${state?.away_team.colors[0]}]`,
-                `to-[${state?.away_team.colors[1]}]`,
-              )}
+              className={cn("bg-linear-(--away-gradient) h-1 rounded-sm")}
+            ></div>
+            <span className="text-2xl text-center">
+              {state?.away_team.name}
+            </span>
+            <div className="flex w-full py-4 gap-4">
+              <div className="flex flex-col">
+                <div className="flex flex-col items-center gap-1">
+                  <Card className="@container/card inline p-6 text-4xl w-36 text-center">
+                    {state?.away_score}
+                  </Card>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 w-25 h-25 text-center"
+                  onClick={() => handleChangeAwayScore(1)}
+                >
+                  <Plus />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                >
+                  <Timer />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                  onClick={() => handleChangeAwayScore(-1)}
+                >
+                  <Minus />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-25 h-25 text-center"
+                >
+                  <RectangleVertical />
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="p-6 text-4xl w-full h-25 text-center col-span-2"
+                >
+                  <ArrowLeftRight />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/*<div className="flex flex-col gap-4">
+            <div
+              id="away-color-strip"
+              className={cn("bg-linear-(--away-gradient) h-1 rounded-sm")}
             ></div>
             <span className="text-2xl text-center">
               {state?.away_team.name}
@@ -336,7 +468,7 @@ const AdvancedController = () => {
                 <ChevronDown />
               </Button>
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
       <Dialog open={isMatchModalOpen}>
