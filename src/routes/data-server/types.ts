@@ -3,7 +3,7 @@ import type { BunRequest } from "bun";
 
 export const PaginationSchema = z.object({
   page: z.number().min(1).optional().default(1),
-  items_per_page: z.number().min(1).max(100).optional().default(25),
+  items_per_page: z.number().min(1).optional().default(100),
 });
 
 export const PlayerId = z.number().brand<"Player">();
@@ -14,7 +14,7 @@ export const TeamSchema = z.object({
   slug: z.string(),
   name: z.string(),
   short_name: z.string(),
-  colors: z.array(z.string()).max(2).or(z.string()),
+  colors: z.array(z.string()).max(2),
   logo: z.string().nullable(),
 });
 export const CreateTeamRequestSchema = z.object({
@@ -75,21 +75,21 @@ export const ListMatchesRequestSchema = z.object({
 });
 
 export const EventIdSchema = z.number().brand<"Event">();
-export const EventTypeSchema = z.union([
-  z.literal("score"),
-  z.literal("timeout"),
-  z.literal("substitution"),
-  z.literal("card"),
-  z.literal("time"),
-  z.literal("note"),
+export const EventTypeSchema = z.enum([
+  "score",
+  "timeout",
+  "substitution",
+  "card",
+  "time",
+  "note",
 ]);
-export const ScoreTypeSchema = z.union([
-  z.literal("close"),
-  z.literal("medium"),
-  z.literal("long"),
-  z.literal("runnin-in"),
-  z.literal("penalty"),
-  z.literal("free-throw"),
+export const ScoreTypeSchema = z.enum([
+  "close",
+  "medium",
+  "long",
+  "running-in",
+  "penalty",
+  "free-throw",
 ]);
 export const CardTypeSchema = z.union([
   z.literal("yellow"),

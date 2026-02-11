@@ -100,7 +100,7 @@ export const prepare_event_response = (event: any): Event | null => {
     team,
     player_1: null,
     player_2: null,
-    score_type: null,
+    score_type: event.score_type,
     card_type: null,
     note: null,
     type: event.type,

@@ -1,12 +1,12 @@
 import { calculate_remaining_time, format } from "@/lib/utils";
 import type { SSRoute, SSState } from "./types";
-import type { Event, Match } from "../data-server/types";
+import type { Event, Match, MatchId } from "../data-server/types";
 
 const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",
   async asyncHandler(payload, state) {
     try {
-      const id = Number(payload.id);
+      const id = Number(payload.id) as MatchId;
 
       if (isNaN(id)) {
         return state;

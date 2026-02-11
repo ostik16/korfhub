@@ -1,6 +1,7 @@
 import {
   CreateEventRequestSchema,
   ListMatchEventsRequestSchema,
+  UpdateEventRequestSchema,
   type CardType,
   type CreateEvent,
   type Event,
@@ -9,28 +10,9 @@ import {
   type ScoreType,
 } from "@/routes/data-server/types";
 
-export const listMatchEvents = async (
-  payload: Partial<ListMatchEventsRequest>,
-): Promise<Event[]> => {
-  ListMatchEventsRequestSchema.parse(payload);
-  const body = JSON.stringify({
-    ...payload,
-  });
-
-  const request = await fetch(
-    `http://${window.location.hostname}:3000/api/v1/event/match-detail`,
-    { method: "POST", body },
-  );
-
-  const res = await request.json();
-  return res;
-};
-
-export const deleteEvent = async (id: EventId) => {
-  await fetch(`http://${window.location.hostname}:3000/api/v1/event/${id}`, {
-    method: "DELETE",
-  });
-};
+//
+// CREATE
+//
 
 export const createScoreEvent = async (
   payload: Pick<CreateEvent, "match" | "team" | "match_time">,
@@ -87,4 +69,52 @@ const createEvent = async (body: string) => {
   );
   const res = await request.json();
   return res;
+};
+
+//
+// READ
+//
+
+export const listMatchEvents = async (
+  payload: Partial<ListMatchEventsRequest>,
+): Promise<Event[]> => {
+  ListMatchEventsRequestSchema.parse(payload);
+  const body = JSON.stringify({
+    ...payload,
+  });
+
+  const request = await fetch(
+    `http://${window.location.hostname}:3000/api/v1/event/match-detail`,
+    { method: "POST", body },
+  );
+
+  const res = await request.json();
+  return res;
+};
+
+//
+// UPDATE
+//
+
+export const updateEvent = async (event: Event) => {
+  const verified = UpdateEventRequestSchema.parse(event);
+  const body = JSON.stringify({ ...verified });
+
+  await fetch(
+    `http://${window.location.hostname}:3000/api/v1/event/${event.id}`,
+    {
+      method: "PUT",
+      body,
+    },
+  );
+};
+
+//
+// DELETE
+//
+
+export const deleteEvent = async (id: EventId) => {
+  await fetch(`http://${window.location.hostname}:3000/api/v1/event/${id}`, {
+    method: "DELETE",
+  });
 };

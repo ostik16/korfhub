@@ -38,7 +38,12 @@ import {
   deleteEvent,
   listMatchEvents,
 } from "@/services/event";
-import type { Event, EventId, EventType } from "@/routes/data-server/types";
+import {
+  EventTypeSchema,
+  type Event,
+  type EventId,
+  type EventType,
+} from "@/routes/data-server/types";
 import {
   Table,
   TableBody,
@@ -69,11 +74,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import TeamControls from "@/components/controller/TeamControls";
+import { Dialog } from "@/components/ui/dialog";
+import UpdateScoreEventForm from "@/components/form/UpdateScoreEventForm";
 
 const AdvancedController = () => {
   const { state } = useContext(GlobalContext);
 
   const [events, setEvents] = useState<Event[]>([]);
+  const [editingEvent, setEditingEvent] = useState<Event>();
+  const [updateForm, setUpdateForm] = useState<EventType>(
+    EventTypeSchema.def.entries.score,
+  );
 
   useEffect(() => {
     if (!state || !state.id) return;
@@ -81,10 +92,19 @@ const AdvancedController = () => {
     listMatchEvents({ match: state.id }).then((res) => setEvents(res));
   }, [state?.id]);
 
+  function handleCloseModal() {
+    setEditingEvent(undefined);
+  }
+
   function handleDeleteEvent(id: EventId) {
     deleteEvent(id).then(() => {
       setEvents((prev) => prev.filter((e) => e.id !== id));
     });
+  }
+
+  function handleUpdateEvent(event: Event) {
+    setEditingEvent(event);
+    setUpdateForm(event.type);
   }
 
   function getEventTypeActionIcon(type: EventType) {
@@ -188,7 +208,11 @@ const AdvancedController = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleUpdateEvent(e)}
+                            >
+                              Edit
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                               variant="destructive"
@@ -207,6 +231,16 @@ const AdvancedController = () => {
           </div>
         </div>
       </div>
+      {/* create dialog form to update event information */}
+      <Dialog open={!!editingEvent}>
+        {editingEvent?.type === EventTypeSchema.def.entries.score && (
+          <UpdateScoreEventForm
+            closeModal={handleCloseModal}
+            event={editingEvent}
+            setEvents={setEvents}
+          />
+        )}
+      </Dialog>
     </>
   );
 };

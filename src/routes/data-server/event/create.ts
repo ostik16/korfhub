@@ -8,7 +8,7 @@ import {
   type Team,
 } from "../types";
 import { db } from "@/index";
-import { handle_error } from "../utils";
+import { handle_error, prepare_event_response } from "../utils";
 
 const url_path = "/api/v1/event/create";
 type path = "/api/v1/event/create";
@@ -54,9 +54,36 @@ export const create: Endpoint = {
         )
         .run(query_object);
 
-      const event = db
-        .query<Match, number>("SELECT * FROM events WHERE id=?")
+      const e = db
+        .query<Match, number>(
+          `
+          SELECT
+            e.id,
+            e.match,
+            e.team,
+            e.player_1,
+            e.player_2,
+            e.type,
+            e.score_type,
+            e.card_type,
+            e.note,
+            e.match_time,
+            e.date,
+            t.id AS team_id,
+            t.slug AS team_slug,
+            t.name AS team_name,
+            t.short_name AS team_short_name,
+            t.color_1 AS team_color_1,
+            t.color_2 AS team_color_2,
+            t.logo AS team_logo
+          FROM events e
+          LEFT JOIN teams t ON e.team = t.id
+          WHERE e.id=?
+          `,
+        )
         .get(lastInsertRowid as number);
+
+      const event = prepare_event_response(e);
 
       return Response.json(event, { status: 200 });
     } catch (e) {

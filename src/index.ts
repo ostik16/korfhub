@@ -10,47 +10,20 @@ import { Database } from "bun:sqlite";
 
 const frontend = serve({
   port: Number(Bun.env.FRONTEND_PORT),
-  // hostname: Bun.env.BASE_URL,
   routes: {
-    // Serve index.html for all unmatched routes.
     "/*": index,
     ...routes,
-
-    // "/api/hello": {
-    //   async GET(req) {
-    //     return Response.json({
-    //       message: "Hello, world!",
-    //       method: "GET",
-    //     });
-    //   },
-    //   async PUT(req) {
-    //     return Response.json({
-    //       message: "Hello, world!",
-    //       method: "PUT",
-    //     });
-    //   },
-    // },
-
-    // "/api/hello/:name": async (req) => {
-    //   const name = req.params.name;
-    //   return Response.json({
-    //     message: `Hello, ${name}!`,
-    //   });
-    // },
   },
 
   development: Bun.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
     hmr: true,
-
-    // Echo console logs from the browser to the server
     console: true,
   },
 });
 
 const scoreboard = serve({
+  // support also standard endpoints to allow controlling of the scoreboard without websocket connection (StreamDeck)
   port: Number(Bun.env.SCOREBOARD_PORT),
-  // hostname: Bun.env.BASE_URL,
   async fetch(req, server) {
     const url = new URL(req.url);
     // console.log(url);
@@ -67,6 +40,10 @@ const scoreboard = serve({
       : new Response("WebSocket upgrade error", { status: 400 });
   },
   websocket,
+  development: Bun.env.NODE_ENV !== "production" && {
+    hmr: true,
+    console: true,
+  },
 });
 
 // const data = serve({
