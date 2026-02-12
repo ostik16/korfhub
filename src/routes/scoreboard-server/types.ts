@@ -16,6 +16,7 @@ export type PeriodType = z.infer<typeof PeriodTypeSchema>;
 export type SSState = {
   id: MatchId | null;
   period: number;
+  period_formatted: string;
   period_count: number;
   period_duration: number;
   home_team: Team;
@@ -25,6 +26,10 @@ export type SSState = {
   time_remaining: number;
   time_remaining_formatted: string;
   time_started_at: number | null;
+  scoreboard_visible: boolean;
+  timeout_for: Team | null;
+  timeout_time_remaining: number;
+  timeout_started_at: number | null;
 };
 
 export type SSRoute<T> = {

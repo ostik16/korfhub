@@ -1,6 +1,7 @@
 import { calculate_remaining_time, format } from "@/lib/utils";
 import type { SSRoute, SSState } from "./types";
 import type { Event, Match, MatchId } from "../data-server/types";
+import { getPeriodName } from "./utils";
 
 const set: SSRoute<{ id: number }> = {
   ws_message_type: "match_set",
@@ -74,7 +75,23 @@ const set: SSRoute<{ id: number }> = {
 const info: SSRoute<null> = {
   ws_message_type: "match_info",
   handler(payload, state) {
-    const time_remaining = calculate_remaining_time(state, 1);
+    const time_remaining = calculate_remaining_time(
+      state.time_started_at,
+      state.time_remaining,
+      1,
+    );
+
+    let timeout_time_remaining = calculate_remaining_time(
+      state.timeout_started_at,
+      state.timeout_time_remaining,
+      0,
+    );
+    let timeout_started_at = state.timeout_started_at;
+
+    if (timeout_time_remaining <= 0) {
+      timeout_started_at = null;
+      timeout_time_remaining = 0;
+    }
 
     const minutes = Math.floor(time_remaining / 60);
     const seconds = Math.floor(time_remaining % 60);
@@ -89,10 +106,15 @@ const info: SSRoute<null> = {
       time_remaining_formatted = `${format(minutes)}:${format(seconds)}`;
     }
 
+    const period_formatted = getPeriodName(state.period, state.period_count);
+
     return {
       ...state,
+      period_formatted,
       time_remaining,
       time_remaining_formatted,
+      timeout_time_remaining,
+      timeout_started_at,
     };
   },
 };

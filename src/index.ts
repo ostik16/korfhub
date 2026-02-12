@@ -1,5 +1,6 @@
 import { serve, type BunRequest } from "bun";
 import index from "./index.html";
+import pv from "./pv.html";
 import {
   sharedState,
   websocket,
@@ -11,6 +12,7 @@ import { Database } from "bun:sqlite";
 const frontend = serve({
   port: Number(Bun.env.FRONTEND_PORT),
   routes: {
+    "/scoreboard/pv": pv,
     "/*": index,
     ...routes,
   },

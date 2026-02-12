@@ -50,11 +50,15 @@ const TeamControls = (props: Props) => {
     // the toggle time button would change to "end timeout" button which would stop the countdown prematurely
     if (!state || !state.id) return;
 
-    const team = side === "home" ? state.home_team.id : state.away_team.id;
+    const team = side === "home" ? state.home_team : state.away_team;
+
+    webSocketControls?.handleTimeout(team);
+
+    if (state.timeout_started_at) return;
 
     createTimeoutEvent({
       match: state.id,
-      team,
+      team: team.id,
       match_time: calculate_match_time(state),
     }).then((e) => setEvents((prev) => [e, ...prev]));
   }

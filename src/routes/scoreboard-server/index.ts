@@ -4,6 +4,7 @@ import { time } from "./time";
 import { score } from "./score";
 import { match } from "./match";
 import { period } from "./period";
+import { scoreboard } from "./scoreboard";
 
 export let sharedState: SSState = config;
 
@@ -14,6 +15,8 @@ export const ws_message_routes = {
     time_reset: time.reset,
     time_adjust: time.adjust,
     time_set: time.set,
+    timeout: time.timeout,
+    timeout_clear: time.timeout_clear,
 
     score_home: score.home,
     score_away: score.away,
@@ -24,6 +27,8 @@ export const ws_message_routes = {
 
     match_set: match.set,
     match_info: match.info,
+
+    scoreboard_set: scoreboard.set,
   },
 };
 
@@ -87,6 +92,18 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
             sharedState,
           );
           break;
+        case ws_message_routes.v1.timeout.ws_message_type:
+          sharedState = ws_message_routes.v1.timeout.handler(
+            payload,
+            sharedState,
+          );
+          break;
+        case ws_message_routes.v1.timeout_clear.ws_message_type:
+          sharedState = ws_message_routes.v1.timeout_clear.handler(
+            payload,
+            sharedState,
+          );
+          break;
         case ws_message_routes.v1.score_home.ws_message_type:
           sharedState = await ws_message_routes.v1.score_home.asyncHandler(
             payload,
@@ -125,6 +142,12 @@ export const websocket: Bun.WebSocketHandler<SSState> = {
           break;
         case ws_message_routes.v1.match_info.ws_message_type:
           sharedState = ws_message_routes.v1.match_info.handler(
+            payload,
+            sharedState,
+          );
+          break;
+        case ws_message_routes.v1.scoreboard_set.ws_message_type:
+          sharedState = ws_message_routes.v1.scoreboard_set.handler(
             payload,
             sharedState,
           );

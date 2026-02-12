@@ -76,9 +76,11 @@ import {
 import TeamControls from "@/components/controller/TeamControls";
 import { Dialog } from "@/components/ui/dialog";
 import UpdateScoreEventForm from "@/components/form/UpdateScoreEventForm";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const AdvancedController = () => {
-  const { state } = useContext(GlobalContext);
+  const { state, webSocketControls } = useContext(GlobalContext);
 
   const [events, setEvents] = useState<Event[]>([]);
   const [editingEvent, setEditingEvent] = useState<Event>();
@@ -90,6 +92,12 @@ const AdvancedController = () => {
     if (!state || !state.id) return;
 
     listMatchEvents({ match: state.id }).then((res) => setEvents(res));
+
+    const interval = setInterval(() => {
+      listMatchEvents({ match: state.id }).then((res) => setEvents(res));
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, [state?.id]);
 
   function handleCloseModal() {
@@ -123,19 +131,41 @@ const AdvancedController = () => {
     }
   }
 
+  function handleScoreboardVisibility() {
+    if (state?.scoreboard_visible === true) {
+      webSocketControls?.setScoreboard({ scoreboard_visible: false });
+      return;
+    }
+    webSocketControls?.setScoreboard({ scoreboard_visible: true });
+  }
+
+  if (!state) return null;
+
   return (
     <>
       <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @4xl/main:grid-cols-3">
         {/* TIME */}
         <div className="flex flex-col gap-4">
           <TimeControls />
+          <Card>
+            <CardContent>
+              <div className="flex items-center space-x-2 col-span-2 @4xl/col-span-3">
+                <Switch
+                  id="scoreboard_visible"
+                  defaultChecked={!!state.scoreboard_visible}
+                  onClick={handleScoreboardVisibility}
+                />
+                <Label htmlFor="scoreboard_visible">Scoreboard Visible</Label>
+              </div>
+            </CardContent>
+          </Card>
           <MatchSettings />
         </div>
 
         <div className="col-span-2 grid grid-cols-2 gap-8 w-200">
           <TeamControls events={events} setEvents={setEvents} />
 
-          <div className="col-span-2">
+          <div className="col-span-2 min-h-96">
             {/*{!events.length && (
               <Empty>
                 <EmptyHeader>

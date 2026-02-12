@@ -12,6 +12,7 @@ import AdvancedController from "./pages/controller/advanced";
 import EventController from "./pages/controller/event";
 import ControlsNavigation from "./pages/controller/navigation";
 import { TooltipProvider } from "./components/ui/tooltip";
+import type { Team } from "./routes/data-server/types";
 
 type WebSocketControls = {
   // webSocket: WebSocket;
@@ -20,6 +21,7 @@ type WebSocketControls = {
   resetTime: () => void;
   setTime: (time: number) => void;
   adjustTime: (time: number) => void;
+  handleTimeout: (timeout_for: Team) => void;
 
   setPeriod: ({ period, total }: { period?: number; total?: number }) => void;
   setPeriodLimit: (time: number) => void;
@@ -29,6 +31,12 @@ type WebSocketControls = {
   resetScore: () => void;
 
   setMatch: (id: number) => void;
+
+  setScoreboard: ({
+    scoreboard_visible,
+  }: {
+    scoreboard_visible: boolean;
+  }) => void;
 };
 
 const contextState: {
@@ -106,6 +114,23 @@ export function App() {
         }),
       );
     },
+    handleTimeout: (timeout_for) => {
+      if (state?.timeout_started_at) {
+        webSocket.send(
+          JSON.stringify({
+            type: ws_message_routes.v1.timeout_clear.ws_message_type,
+            payload: null,
+          }),
+        );
+        return;
+      }
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.timeout.ws_message_type,
+          payload: { timeout_for },
+        }),
+      );
+    },
     setPeriod: ({ period, total }) => {
       webSocket.send(
         JSON.stringify({
@@ -151,6 +176,14 @@ export function App() {
         JSON.stringify({
           type: ws_message_routes.v1.match_set.ws_message_type,
           payload: { id },
+        }),
+      );
+    },
+    setScoreboard: ({ scoreboard_visible }) => {
+      webSocket.send(
+        JSON.stringify({
+          type: ws_message_routes.v1.scoreboard_set.ws_message_type,
+          payload: { scoreboard_visible },
         }),
       );
     },

@@ -1,5 +1,6 @@
 import { calculate_remaining_time } from "@/lib/utils";
 import type { SSState, SSRoute } from "./types";
+import type { Team } from "../data-server/types";
 
 const start: SSRoute<null> = {
   ws_message_type: "time_start",
@@ -22,7 +23,10 @@ const start: SSRoute<null> = {
 const stop: SSRoute<null> = {
   ws_message_type: "time_stop",
   handler(payload, state) {
-    const time_remaining = calculate_remaining_time(state);
+    const time_remaining = calculate_remaining_time(
+      state.time_started_at,
+      state.time_remaining,
+    );
 
     return { ...state, time_remaining, time_started_at: null } as SSState;
   },
@@ -77,10 +81,35 @@ const adjust: SSRoute<{ time: number }> = {
   },
 };
 
+const timeout: SSRoute<{ timeout_for: Team }> = {
+  ws_message_type: "timeout",
+  handler(payload, state) {
+    return {
+      ...state,
+      timeout_started_at: Date.now(),
+      timeout_time_remaining: 60,
+      timeout_for: payload.timeout_for,
+    };
+  },
+};
+
+const timeout_clear: SSRoute<null> = {
+  ws_message_type: "timeout_clear",
+  handler(payload, state) {
+    return {
+      ...state,
+      timeout_started_at: null,
+      timeout_time_remaining: 0,
+    };
+  },
+};
+
 export const time = {
   start,
   stop,
   reset,
   set,
   adjust,
+  timeout,
+  timeout_clear,
 };

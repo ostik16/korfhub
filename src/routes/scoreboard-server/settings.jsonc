@@ -18,4 +18,10 @@
   "time_remaining": 600,
   "time_remaining_formatted": "10:00",
   "time_started_at": null, // will be timestamp if time is running
+
+  "timeout_time_remaining": 0,
+  "timeout_started_at": null,
+  "timeout_for": null,
+
+  "scoreboard_visible": false,
 }

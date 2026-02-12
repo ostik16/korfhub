@@ -42,9 +42,7 @@ const TimeControls = () => {
             {state?.time_remaining_formatted}
           </CardTitle>
           <CardAction>
-            <Badge variant="secondary">
-              {getPeriodName(state?.period ?? 1, state?.period_count ?? 2)}
-            </Badge>
+            <Badge variant="secondary">{state?.period_formatted}</Badge>
           </CardAction>
         </CardHeader>
         <CardContent>

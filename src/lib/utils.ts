@@ -8,20 +8,23 @@ export function cn(...inputs: ClassValue[]) {
 
 export const format = (num: number | undefined) => String(num).padStart(2, "0");
 
-export const calculate_remaining_time = (state: SSState, toFixed = 2) => {
-  if (!state.time_started_at) {
-    return Number(state.time_remaining.toFixed(toFixed));
+export const calculate_remaining_time = (
+  time_started_at: number | null,
+  time_remaining: number,
+  toFixed = 2,
+) => {
+  if (!time_started_at) {
+    return Number(time_remaining.toFixed(toFixed));
   }
 
-  const start = state.time_started_at;
+  const start = time_started_at;
   const end = Date.now();
   const diff = (end - start) / 1000; // with .1s precision
   const calculated_time = Number(
-    Number(state.time_remaining - diff).toFixed(toFixed),
+    Number(time_remaining - diff).toFixed(toFixed),
   );
 
-  const time_remaining = Math.max(calculated_time, 0); // do not go bellow 0
-  return time_remaining;
+  return Math.max(calculated_time, 0); // do not go bellow 0
 };
 
 export const calculate_match_time = (state: SSState) => {
