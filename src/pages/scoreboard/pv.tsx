@@ -55,7 +55,7 @@ type TeamProps = {
 
 const Team = ({ team, score }: TeamProps) => {
   return (
-    <CardContent className="flex px-4 justify-between gap-8 items-center">
+    <CardContent className="flex px-4 justify-between gap-8 items-center text-xl">
       <div className="flex items-center gap-2">
         <img src={logoPicker(team.logo)} className="w-10" />
         <ColorStrip colors={team.colors} />
@@ -72,7 +72,7 @@ type ScoreProps = {
 
 const Score = ({ score }: ScoreProps) => {
   return (
-    <div className="text-2xl font-bold min-w-10 text-right">
+    <div className="text-3xl font-bold min-w-10 text-right font-korf-modular">
       <SlidingNumber number={score} />
     </div>
   );
@@ -85,9 +85,9 @@ type TimeProps = {
 
 const Time = ({ time_formatted, period_formatted }: TimeProps) => {
   return (
-    <div className="flex gap-4 px-4 items-center">
-      <div className="text-sm w-5">{period_formatted}</div>
-      <div className="text-lg w-14">{time_formatted}</div>
+    <div className="flex gap-4 px-4 items-center font-korf-modular h-10">
+      <div className="text-xl w-5">{period_formatted}</div>
+      <div className="text-3xl w-20">{time_formatted}</div>
     </div>
   );
 };
@@ -100,11 +100,11 @@ type TimeoutProps = {
 const Timeout = ({ team, time_formatted }: TimeoutProps) => {
   if (!team) return null;
   return (
-    <div className="flex gap-2 px-4 items-center min-w-36">
+    <div className="flex gap-2 px-4 items-center min-w-40 font-korf-modular">
       <img src={logoPicker(team.logo)} className="w-8" />
       <ColorStrip colors={team.colors} />
       <Timer />
-      <div className="text-lg">{time_formatted}</div>
+      <div className="text-3xl">{time_formatted}</div>
     </div>
   );
 };
@@ -118,7 +118,7 @@ const PV = () => {
   const isTimeout = state.timeout_started_at;
 
   return (
-    <div className="flex flex-col gap-2 p-4">
+    <div className="flex flex-col gap-2 p-4 font-korf-uttara">
       <Card
         style={{ backgroundImage: `url(${pattern})`, backgroundSize: "cover" }}
         className={cn(
@@ -132,7 +132,7 @@ const PV = () => {
       <div className="flex gap-2">
         <Card
           className={cn(
-            "py-4 w-max duration-500 delay-75 -ml-96 z-20",
+            "py-2 w-max duration-500 delay-75 -ml-96 z-20",
             isVisible ? "ml-0" : "delay-0",
           )}
         >

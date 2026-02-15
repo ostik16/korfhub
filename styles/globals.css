@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -39,6 +39,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-korf-uttara: KorfUttara;
+  --font-korf-modular: KorfModular;
 }
 
 :root {
@@ -117,4 +119,20 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@font-face {
+  font-family: KorfUttara;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/fonts/KorfUttara-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: KorfModular;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/fonts/KorfModular-Regular.otf') format('opentype');
 }
