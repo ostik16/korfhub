@@ -78,12 +78,18 @@ const TimeControls = () => {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
+            <Button variant="outline" onClick={() => handleAdjustTime(15)}>
+              +15s
+            </Button>
             <Button variant="outline" onClick={() => handleAdjustTime(5)}>
               +5s
             </Button>
             <Button variant="outline" onClick={() => handleAdjustTime(1)}>
               +1s
+            </Button>
+            <Button variant="outline" onClick={() => handleAdjustTime(-15)}>
+              -15s
             </Button>
             <Button variant="outline" onClick={() => handleAdjustTime(-5)}>
               -5s

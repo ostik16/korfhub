@@ -82,6 +82,7 @@ const MatchSettings = () => {
 
   function handleChangePeriod(period: string) {
     webSocketControls?.setPeriod({ period: Number(period) });
+    handleResetTime();
   }
 
   function handleChangePeriodCount(count: string) {
