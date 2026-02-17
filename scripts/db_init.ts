@@ -5,10 +5,16 @@ const db = new Database("./data/database.sqlite", {
   strict: true,
 });
 
-// db.run("DROP TABLE teams");
-// db.run("DROP TABLE players");
-// db.run("DROP TABLE matches");
-// db.run("DROP TABLE events");
+db.run("DROP TABLE IF EXISTS teams");
+db.run("DROP TABLE IF EXISTS rosters");
+db.run("DROP TABLE IF EXISTS players");
+db.run("DROP TABLE IF EXISTS matches");
+db.run("DROP TABLE IF EXISTS events");
+
+// create rosters table
+// due to the fact that player can be in multiple rosters/teams
+// enhance the teams table with league - two teams with the same name will have different rosters
+// when creating a match
 
 db.run(`
   CREATE TABLE IF NOT EXISTS teams (
@@ -17,9 +23,34 @@ db.run(`
     name TEXT NOT NULL,
     short_name TEXT NOT NULL,
     logo TEXT,
+    league TEXT NOT NULL,
+    roster INTEGER,
     color_1 TEXT,
     color_2 TEXT
   );
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS rosters (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    player_1 INTEGER NOT NULL,
+    player_2 INTEGER NOT NULL,
+    player_3 INTEGER NOT NULL,
+    player_4 INTEGER NOT NULL,
+    player_5 INTEGER NOT NULL,
+    player_6 INTEGER NOT NULL,
+    player_7 INTEGER NOT NULL,
+    player_8 INTEGER NOT NULL,
+    player_9 INTEGER,
+    player_10 INTEGER,
+    player_11 INTEGER,
+    player_12 INTEGER,
+    player_13 INTEGER,
+    player_14 INTEGER,
+    player_15 INTEGER,
+    player_16 INTEGER
+  )
 `);
 
 db.run(`
@@ -29,7 +60,8 @@ db.run(`
     name TEXT NOT NULL,
     number INTEGER,
     bithday TEXT,
-    default_team TEXT
+    picture TEXT,
+    default_team_id INTEGER
   )
 `);
 
@@ -39,13 +71,16 @@ db.run(`
     slug TEXT NOT NULL UNIQUE,
     home_team_id INTEGER NOT NULL,
     away_team_id INTEGER NOT NULL,
-    home_team_roster TEXT CHECK(json_valid(home_team_roster)),
-    away_team_roster TEXT CHECK(json_valid(away_team_roster)),
     date TEXT,
+    period_duration INTEGER NOT NULL, -- update the endpoints
+    period_count INTEGER NOT NULL, -- update the endpoints
+    -- also update time counting based on the latest event
+    allowed_timeouts INTEGER, -- update the endpoints
+    allowed_substitutions INTEGER, -- update the endpoints
     completed BIT
-    -- add amount of timeouts and subs available in a match
   );
 `);
+
 db.run(`
   CREATE TABLE IF NOT EXISTS events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,10 +95,5 @@ db.run(`
     note TEXT,
     match_time INTEGER,
     date TEXT
-    -- track statistics in the same table as events
-    -- will have to decide what events are showable with a flag
-    -- events without flag are just a statistic
-    -- this means the event type has to be extended
-    -- indexes should be created
   );
 `);

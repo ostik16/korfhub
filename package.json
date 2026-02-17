@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "db-init": "bun ./scripts/db_init.ts",
+    "db:init": "bun ./scripts/db_init.ts",
+    "db:populate": "bun ./scripts/populate_db.ts",
     "dev": "bun --hot src/index.ts",
     "start": "NODE_ENV=production bun src/index.ts",
     "build": "bun run build.ts"

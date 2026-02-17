@@ -7,8 +7,38 @@ export const PaginationSchema = z.object({
 });
 
 export const PlayerId = z.number().brand<"Player">();
-
+export const RosterId = z.number().brand<"Roster">();
 export const TeamIdSchema = z.number().brand<"Team">();
+
+export const PlayerSchema = z.object({
+  id: PlayerId,
+  slug: z.string(),
+  name: z.string(),
+  number: z.number().nullable(),
+  picture: z.string().nullable(),
+});
+
+export const RosterSchema = z.object({
+  id: RosterId,
+  name: z.string(),
+  player_1: PlayerId,
+  player_2: PlayerId,
+  player_3: PlayerId,
+  player_4: PlayerId,
+  player_5: PlayerId,
+  player_6: PlayerId,
+  player_7: PlayerId,
+  player_8: PlayerId,
+  player_9: PlayerId.nullable(),
+  player_10: PlayerId.nullable(),
+  player_11: PlayerId.nullable(),
+  player_12: PlayerId.nullable(),
+  player_13: PlayerId.nullable(),
+  player_14: PlayerId.nullable(),
+  player_15: PlayerId.nullable(),
+  player_16: PlayerId.nullable(),
+});
+
 export const TeamSchema = z.object({
   id: TeamIdSchema,
   slug: z.string(),
@@ -16,21 +46,89 @@ export const TeamSchema = z.object({
   short_name: z.string(),
   colors: z.array(z.string()).max(2),
   logo: z.string().nullable(),
+  league: z.string(),
+  roster: RosterSchema.nullable(),
 });
 export const CreateTeamRequestSchema = z.object({
   name: z.string(),
   short_name: z.string().max(3),
   colors: z.array(z.string()).max(2),
+  league: z.string(),
   logo: z.string().nullable(),
 });
 export const UpdateTeamRequestSchema = z.object({
   name: z.string().optional(),
   short_name: z.string().max(3).optional(),
   logo: z.string().nullable().optional(),
+  league: z.string().optional(),
+  roster: RosterId.optional(),
   color_1: z.string().optional(),
   color_2: z.string().optional(),
 });
 export const ListTeamsRequestSchema = z.object({
+  ...PaginationSchema.shape,
+});
+
+export const CreatePlayerRequestSchema = z.object({
+  name: z.string(),
+  number: z.number().int().positive().nullable().optional(),
+  birthday: z.string().optional().nullable(),
+  default_team_id: z.number().int().positive().nullable().optional(),
+});
+
+export const UpdatePlayerRequestSchema = z.object({
+  name: z.string().optional(),
+  number: z.number().int().positive().nullable().optional(),
+  birthday: z.string().optional().nullable(),
+  default_team_id: z.number().int().positive().nullable().optional(),
+  picture: z.string().optional().nullable(),
+});
+
+export const ListPlayersRequestSchema = z.object({
+  ...PaginationSchema.shape,
+});
+
+export const CreateRosterRequestSchema = z.object({
+  name: z.string(),
+  player_1: PlayerId,
+  player_2: PlayerId,
+  player_3: PlayerId,
+  player_4: PlayerId,
+  player_5: PlayerId,
+  player_6: PlayerId,
+  player_7: PlayerId,
+  player_8: PlayerId,
+  player_9: PlayerId.optional().nullable(),
+  player_10: PlayerId.optional().nullable(),
+  player_11: PlayerId.optional().nullable(),
+  player_12: PlayerId.optional().nullable(),
+  player_13: PlayerId.optional().nullable(),
+  player_14: PlayerId.optional().nullable(),
+  player_15: PlayerId.optional().nullable(),
+  player_16: PlayerId.optional().nullable(),
+});
+
+export const UpdateRosterRequestSchema = z.object({
+  name: z.string().optional(),
+  player_1: PlayerId.optional(),
+  player_2: PlayerId.optional(),
+  player_3: PlayerId.optional(),
+  player_4: PlayerId.optional(),
+  player_5: PlayerId.optional(),
+  player_6: PlayerId.optional(),
+  player_7: PlayerId.optional(),
+  player_8: PlayerId.optional(),
+  player_9: PlayerId.optional().nullable(),
+  player_10: PlayerId.optional().nullable(),
+  player_11: PlayerId.optional().nullable(),
+  player_12: PlayerId.optional().nullable(),
+  player_13: PlayerId.optional().nullable(),
+  player_14: PlayerId.optional().nullable(),
+  player_15: PlayerId.optional().nullable(),
+  player_16: PlayerId.optional().nullable(),
+});
+
+export const ListRostersRequestSchema = z.object({
   ...PaginationSchema.shape,
 });
 
@@ -40,9 +138,15 @@ export const MatchSchema = z.object({
   slug: z.string(),
   date: z.date(),
   home_team: TeamSchema,
-  home_team_roster: z.object(),
+  home_team_roster: RosterSchema,
   away_team: TeamSchema,
-  away_team_roster: z.object(),
+  away_team_roster: RosterSchema,
+  match_info: z.object({
+    period_duration: z.number(),
+    period_count: z.number(),
+    allowed_timeouts: z.number(),
+    allowed_substitutions: z.number(),
+  }),
 });
 export const CreateMatchRequestSchema = z.object({
   home_team_id: z.string(),
@@ -69,6 +173,11 @@ export const ReadMatchResponseSchema = z.object({
   away_team_roster: z.string().nullable(),
   away_team_logo: z.string().nullable(),
   date: z.string().transform((v) => new Date(v)),
+  period_count: z.number(),
+  period_duration: z.number(),
+  allowed_timeouts: z.number().nullable(),
+  allowed_substitutions: z.number().nullable(),
+  completed: z.boolean().transform((v) => !!v),
 });
 export const ListMatchesRequestSchema = z.object({
   ...PaginationSchema.shape,

@@ -29,6 +29,9 @@ export const handle_error = (e: any) => {
 
 export const prepare_team_response = (team: any): Team | null => {
   if (team === null) return null;
+
+  // handle rosters
+
   return {
     ...team,
     colors: [team.color_1, team.color_2],
@@ -106,5 +109,43 @@ export const prepare_event_response = (event: any): Event | null => {
     type: event.type,
     date: event.date,
     match_time: event.match_time,
+  };
+};
+
+export const prepare_player_response = (player: any) => {
+  if (player === null) return null;
+
+  return {
+    id: player.id,
+    slug: player.slug,
+    name: player.name,
+    number: player.number ?? null,
+    birthday: player.birthday ?? null,
+    default_team_id: player.default_team_id ?? null,
+  };
+};
+
+export const prepare_roster_response = (roster: any) => {
+  if (roster === null) return null;
+
+  return {
+    id: roster.id,
+    name: roster.name,
+    player_1: roster.player_1,
+    player_2: roster.player_2,
+    player_3: roster.player_3,
+    player_4: roster.player_4,
+    player_5: roster.player_5,
+    player_6: roster.player_6,
+    player_7: roster.player_7,
+    player_8: roster.player_8,
+    player_9: roster.player_9 ?? null,
+    player_10: roster.player_10 ?? null,
+    player_11: roster.player_11 ?? null,
+    player_12: roster.player_12 ?? null,
+    player_13: roster.player_13 ?? null,
+    player_14: roster.player_14 ?? null,
+    player_15: roster.player_15 ?? null,
+    player_16: roster.player_16 ?? null,
   };
 };

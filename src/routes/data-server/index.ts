@@ -7,6 +7,12 @@ import { list as match_list } from "./match/list";
 import { create as event_create } from "./event/create";
 import { match_detail as event_match_detail } from "./event/match-detail";
 import { id as event_id } from "./event/:id";
+import { create as player_create } from "./player/create";
+import { list as player_list } from "./player/list";
+import { id as player_id } from "./player/:id";
+import { create as roster_create } from "./roster/create";
+import { list as roster_list } from "./roster/list";
+import { id as roster_id } from "./roster/:id";
 
 export const routes = {
   [team_create.url_path]: team_create,
@@ -20,4 +26,14 @@ export const routes = {
   [event_create.url_path]: event_create,
   [event_match_detail.url_path]: event_match_detail,
   [event_id.url_path]: event_id,
+
+  [player_create.url_path]: player_create,
+  [player_list.url_path]: player_list,
+  [player_id.url_path]: player_id,
+
+  [roster_create.url_path]: roster_create,
+  [roster_list.url_path]: roster_list,
+  [roster_id.url_path]: roster_id,
 };
+
+

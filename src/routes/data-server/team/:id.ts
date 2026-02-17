@@ -45,6 +45,8 @@ export const id: Endpoint = {
         name: payload.name ?? team.name,
         short_name: payload.short_name ?? team.short_name,
         logo: payload.logo ?? team.logo,
+        league: payload.league ?? team.league,
+        roster: payload.roster ?? team.roster?.id ?? null,
         color_1: payload.color_1 ?? team.colors[0] ?? null,
         color_2: payload.color_2 ?? team.colors[1] ?? null,
       };
@@ -54,6 +56,8 @@ export const id: Endpoint = {
           SET name=$name,
             short_name=$short_name,
             logo=$logo,
+            league=$league,
+            roster=$roster,
             color_1=$color_1,
             color_2=$color_2
           WHERE id=$id`,
