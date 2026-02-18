@@ -141,6 +141,7 @@ export const MatchSchema = z.object({
   home_team_roster: RosterSchema,
   away_team: TeamSchema,
   away_team_roster: RosterSchema,
+  completed: z.boolean(),
   match_info: z.object({
     period_duration: z.number(),
     period_count: z.number(),
@@ -177,7 +178,7 @@ export const ReadMatchResponseSchema = z.object({
   period_duration: z.number(),
   allowed_timeouts: z.number().nullable(),
   allowed_substitutions: z.number().nullable(),
-  completed: z.boolean().transform((v) => !!v),
+  completed: z.number().transform((v) => !!v),
 });
 export const ListMatchesRequestSchema = z.object({
   ...PaginationSchema.shape,
@@ -284,6 +285,7 @@ export const ReadEventResponseSchema = z.object({
   note: z.string().nullable(),
   match_time: z.number(),
   date: z.string(),
+  completed: z.boolean(),
 });
 
 export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {

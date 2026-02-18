@@ -30,13 +30,14 @@ export const handle_error = (e: any) => {
 export const prepare_team_response = (team: any): Team | null => {
   if (team === null) return null;
 
-  // handle rosters
+  // handle roster
 
   return {
     ...team,
     colors: [team.color_1, team.color_2],
     color_1: undefined,
     color_2: undefined,
+    roster: null,
   };
 };
 
@@ -71,6 +72,13 @@ export const prepare_match_response = (match: any): Match | null => {
     ? JSON.parse(match.away_team_roster)
     : null;
 
+  const match_info = {
+    period_duration: match.period_duration,
+    period_count: match.period_count,
+    allowed_timeouts: match.allowed_timeouts,
+    allowed_substitutions: match.allowed_substitutions,
+  };
+
   return {
     id: match.id,
     slug: match.slug,
@@ -79,6 +87,8 @@ export const prepare_match_response = (match: any): Match | null => {
     away_team_roster,
     home_team,
     away_team,
+    match_info,
+    completed: match.completed,
   };
 };
 

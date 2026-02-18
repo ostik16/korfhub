@@ -19,8 +19,11 @@ export const id: Endpoint = {
             m.id,
             m.date,
             m.slug,
-            m.home_team_roster,
-            m.away_team_roster,
+            m.period_duration,
+            m.period_count,
+            m.allowed_timeouts,
+            m.allowed_substitutions,
+            m.completed,
             home.id AS home_team_id,
             home.slug AS home_team_slug,
             home.name AS home_team_name,
@@ -28,13 +31,15 @@ export const id: Endpoint = {
             home.color_1 AS home_team_color_1,
             home.color_2 AS home_team_color_2,
             home.logo AS home_team_logo,
+            home.roster AS home_team_roster,
             away.id AS away_team_id,
             away.slug AS away_team_slug,
             away.name AS away_team_name,
             away.short_name AS away_team_short_name,
             away.color_1 AS away_team_color_1,
             away.color_2 AS away_team_color_2,
-            away.logo AS away_team_logo
+            away.logo AS away_team_logo,
+            away.roster AS away_team_roster
         FROM matches m
         LEFT JOIN teams home ON m.home_team_id = home.id
         LEFT JOIN teams away ON m.away_team_id = away.id

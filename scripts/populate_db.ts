@@ -164,7 +164,7 @@ const matches = [
     home_team_id: 1,
     away_team_id: 2,
     date: "2026-02-17T10:00:00Z",
-    period_duration: 10,
+    period_duration: 600,
     period_count: 4,
     allowed_timeouts: 2,
     allowed_substitutions: 5,
