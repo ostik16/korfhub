@@ -11,6 +11,8 @@ import BasicController from "./pages/controller/basic";
 import AdvancedController from "./pages/controller/advanced";
 import EventController from "./pages/controller/event";
 import ControlsNavigation from "./pages/controller/navigation";
+import PlayersPage from "./pages/players";
+import PlayerDetailPage from "./pages/players/[id]";
 import { TooltipProvider } from "./components/ui/tooltip";
 import type { Team } from "./routes/data-server/types";
 
@@ -202,6 +204,8 @@ export function App() {
             <Route path="advanced" element={<AdvancedController />} />
             <Route path="event" element={<EventController />} />
           </Route>
+          <Route path="players" element={<PlayersPage />} />
+          <Route path="players/:id" element={<PlayerDetailPage />} />
           <Route path="scoreboard">
             <Route path="pv" element={<PV />} />
           </Route>

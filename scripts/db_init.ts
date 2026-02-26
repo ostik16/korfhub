@@ -5,16 +5,12 @@ const db = new Database("./data/database.sqlite", {
   strict: true,
 });
 
-db.run("DROP TABLE IF EXISTS teams");
-db.run("DROP TABLE IF EXISTS rosters");
-db.run("DROP TABLE IF EXISTS players");
-db.run("DROP TABLE IF EXISTS matches");
-db.run("DROP TABLE IF EXISTS events");
-
-// create rosters table
-// due to the fact that player can be in multiple rosters/teams
-// enhance the teams table with league - two teams with the same name will have different rosters
-// when creating a match
+// db.run("DROP TABLE IF EXISTS teams");
+// db.run("DROP TABLE IF EXISTS rosters");
+// db.run("DROP TABLE IF EXISTS players");
+// db.run("DROP TABLE IF EXISTS matches");
+// db.run("DROP TABLE IF EXISTS events");
+// db.run("DROP TABLE IF EXISTS statistics");
 
 db.run(`
   CREATE TABLE IF NOT EXISTS teams (
@@ -59,7 +55,7 @@ db.run(`
     slug TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     number INTEGER,
-    bithday TEXT,
+    birthday TEXT,
     picture TEXT,
     default_team_id INTEGER
   )
@@ -95,5 +91,24 @@ db.run(`
     note TEXT,
     match_time INTEGER,
     date TEXT
+  );
+`);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS statistics (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    match INTEGER NOT NULL,
+    player INTEGER NOT NULL,
+    --
+    shots_total INTEGER,
+    shots_scored INTEGER,
+    assists INTEGER,
+    offensive_rebound INTEGER,
+    offensive_rebound_lost INTEGER,
+    defensive_rebound INTEGER,
+    defensive_rebound_lost INTEGER,
+    gain INTEGER,
+    lost INTEGER,
+    play_time INTEGER
   );
 `);

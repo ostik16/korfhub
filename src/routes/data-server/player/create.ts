@@ -21,12 +21,13 @@ export const create: Endpoint = {
         name: payload.name,
         number: payload.number ?? null,
         birthday: payload.birthday ?? null,
+        picture: null,
         default_team_id: payload.default_team_id ?? null,
       };
 
       const { lastInsertRowid } = db
         .query(
-          "INSERT INTO players VALUES ($id, $slug, $name, $number, $birthday, $default_team_id)",
+          "INSERT INTO players VALUES ($id, $slug, $name, $number, $birthday, $default_team_id, $picture)",
         )
         .run(query_object);
 

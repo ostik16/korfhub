@@ -92,10 +92,10 @@ const AdvancedController = () => {
   useEffect(() => {
     if (!state || !state.id) return;
 
-    listMatchEvents({ match: state.id }).then((res) => setEvents(res));
+    listMatchEvents({ match: state.id! }).then((res) => setEvents(res));
 
     const interval = setInterval(() => {
-      listMatchEvents({ match: state.id }).then((res) => setEvents(res));
+      listMatchEvents({ match: state.id! }).then((res) => setEvents(res));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -144,7 +144,7 @@ const AdvancedController = () => {
 
   return (
     <>
-      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @4xl/main:grid-cols-3">
+      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @4xl/main:grid-cols-3">
         {/* TIME */}
         <div className="flex flex-col gap-4">
           <TimeControls />

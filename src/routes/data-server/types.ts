@@ -17,6 +17,7 @@ export const PlayerSchema = z.object({
   number: z.number().nullable(),
   picture: z.string().nullable(),
   birthday: z.string().nullable(),
+  default_team_id: z.number().nullable(),
 });
 export type Player = z.infer<typeof PlayerSchema>;
 

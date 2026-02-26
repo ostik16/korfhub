@@ -11,7 +11,12 @@ import { Card } from "../ui/card";
 import { useContext, type Dispatch, type SetStateAction } from "react";
 import { GlobalContext } from "@/App";
 import type { Event } from "@/routes/data-server/types";
-import { createScoreEvent, createTimeoutEvent } from "@/services/event";
+import {
+  createScoreEvent,
+  createTimeoutEvent,
+  createCardEvent,
+  createSubEvent,
+} from "@/services/event";
 
 type Props = {
   events: Event[];
@@ -63,6 +68,30 @@ const TeamControls = (props: Props) => {
     }).then((e) => setEvents((prev) => [e, ...prev]));
   }
 
+  function handleCard(side: "home" | "away") {
+    if (!state || !state.id) return;
+
+    const team = side === "home" ? state.home_team.id : state.away_team.id;
+
+    createCardEvent({
+      match: state.id,
+      team,
+      match_time: calculate_match_time(state),
+    }).then((e) => setEvents((prev) => [e, ...prev]));
+  }
+
+  function handleSubstitution(side: "home" | "away") {
+    if (!state || !state.id) return;
+
+    const team = side === "home" ? state.home_team.id : state.away_team.id;
+
+    createSubEvent({
+      match: state.id,
+      team,
+      match_time: calculate_match_time(state),
+    }).then((e) => setEvents((prev) => [e, ...prev]));
+  }
+
   return (
     <>
       <div
@@ -100,6 +129,7 @@ const TeamControls = (props: Props) => {
               asChild
               variant="outline"
               className="p-6 text-4xl w-25 h-25 text-center"
+              onClick={() => handleCard("home")}
             >
               <RectangleVertical />
             </Button>
@@ -115,6 +145,7 @@ const TeamControls = (props: Props) => {
               asChild
               variant="outline"
               className="p-6 text-4xl w-full h-25 text-center col-span-2"
+              onClick={() => handleSubstitution("home")}
             >
               <ArrowLeftRight />
             </Button>
@@ -179,6 +210,7 @@ const TeamControls = (props: Props) => {
               asChild
               variant="outline"
               className="p-6 text-4xl w-25 h-25 text-center"
+              onClick={() => handleCard("away")}
             >
               <RectangleVertical />
             </Button>
@@ -186,6 +218,7 @@ const TeamControls = (props: Props) => {
               asChild
               variant="outline"
               className="p-6 text-4xl w-full h-25 text-center col-span-2"
+              onClick={() => handleSubstitution("away")}
             >
               <ArrowLeftRight />
             </Button>
