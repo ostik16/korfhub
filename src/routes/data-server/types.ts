@@ -16,7 +16,9 @@ export const PlayerSchema = z.object({
   name: z.string(),
   number: z.number().nullable(),
   picture: z.string().nullable(),
+  birthday: z.string().nullable(),
 });
+export type Player = z.infer<typeof PlayerSchema>;
 
 export const RosterSchema = z.object({
   id: RosterId,
@@ -303,6 +305,51 @@ export type ScoreType = z.infer<typeof ScoreTypeSchema>;
 export type CardType = z.infer<typeof CardTypeSchema>;
 export type EventType = z.infer<typeof EventTypeSchema>;
 
+// --- Statistics Types and Schemas ---
+export const StatisticId = z.number().brand<"Statistic">();
+export const StatisticSchema = z.object({
+  id: StatisticId,
+  match: MatchIdSchema,
+  player: PlayerId,
+  shots_total: z.number().int().nonnegative(),
+  shots_scored: z.number().int().nonnegative(),
+  assists: z.number().int().nonnegative(),
+  offensive_rebound: z.number().int().nonnegative(),
+  offensive_rebound_lost: z.number().int().nonnegative(),
+  defensive_rebound: z.number().int().nonnegative(),
+  defensive_rebound_lost: z.number().int().nonnegative(),
+  gain: z.number().int().nonnegative(),
+  lost: z.number().int().nonnegative(),
+});
+
+export const CreateStatisticRequestSchema = z.object({
+  match: MatchIdSchema,
+  player: PlayerId,
+});
+
+export const UpdateStatisticRequestSchema = z.object({
+  shots_total: z.number().int().nonnegative().optional(),
+  shots_scored: z.number().int().nonnegative().optional(),
+  assists: z.number().int().nonnegative().optional(),
+  offensive_rebound: z.number().int().nonnegative().optional(),
+  offensive_rebound_lost: z.number().int().nonnegative().optional(),
+  defensive_rebound: z.number().int().nonnegative().optional(),
+  defensive_rebound_lost: z.number().int().nonnegative().optional(),
+  gain: z.number().int().nonnegative().optional(),
+  lost: z.number().int().nonnegative().optional(),
+});
+
+export const ListStatisticsRequestSchema = z.object({
+  ...PaginationSchema.shape,
+  match: MatchIdSchema.optional(),
+  player: PlayerId.optional(),
+});
+
+export type Statistic = z.infer<typeof StatisticSchema>;
+export type StatisticId = z.infer<typeof StatisticId>;
+export type CreateStatistic = z.infer<typeof CreateStatisticRequestSchema>;
+export type UpdateStatistic = z.infer<typeof UpdateStatisticRequestSchema>;
+export type ListStatisticsRequest = z.infer<typeof ListStatisticsRequestSchema>;
 export type Endpoint = {
   readonly url_path: string;
   POST?: (req: BunRequest<any>) => Promise<Response>;

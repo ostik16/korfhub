@@ -14,6 +14,10 @@ import { create as roster_create } from "./roster/create";
 import { list as roster_list } from "./roster/list";
 import { id as roster_id } from "./roster/:id";
 
+import { create as statistics_create } from "./statistics/create";
+import { list as statistics_list } from "./statistics/list";
+import { id as statistics_id } from "./statistics/:id";
+
 export const routes = {
   [team_create.url_path]: team_create,
   [team_list.url_path]: team_list,
@@ -34,6 +38,10 @@ export const routes = {
   [roster_create.url_path]: roster_create,
   [roster_list.url_path]: roster_list,
   [roster_id.url_path]: roster_id,
+
+    [statistics_create.url_path]: statistics_create,
+    [statistics_list.url_path]: statistics_list,
+    [statistics_id.url_path]: statistics_id,
 };
 
 

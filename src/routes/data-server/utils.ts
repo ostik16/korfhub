@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Match, Team, Event } from "./types";
+import type { Match, Team, Event, Player } from "./types";
 
 export const sanitize_slug = (str: string) => {
   return (
@@ -122,7 +122,7 @@ export const prepare_event_response = (event: any): Event | null => {
   };
 };
 
-export const prepare_player_response = (player: any) => {
+export const prepare_player_response = (player: any): Player | null => {
   if (player === null) return null;
 
   return {
@@ -131,7 +131,8 @@ export const prepare_player_response = (player: any) => {
     name: player.name,
     number: player.number ?? null,
     birthday: player.birthday ?? null,
-    default_team_id: player.default_team_id ?? null,
+    picture: player.picutre ?? null,
+    // default_team_id: player.default_team_id ?? null,
   };
 };
 
@@ -157,5 +158,23 @@ export const prepare_roster_response = (roster: any) => {
     player_14: roster.player_14 ?? null,
     player_15: roster.player_15 ?? null,
     player_16: roster.player_16 ?? null,
+  };
+};
+
+export const prepare_statistic_response = (stat: any) => {
+  if (stat === null) return null;
+  return {
+    id: stat.id,
+    match: stat.match,
+    player: stat.player,
+    shots_total: stat.shots_total ?? 0,
+    shots_scored: stat.shots_scored ?? 0,
+    assists: stat.assists ?? 0,
+    offensive_rebound: stat.offensive_rebound ?? 0,
+    offensive_rebound_lost: stat.offensive_rebound_lost ?? 0,
+    defensive_rebound: stat.defensive_rebound ?? 0,
+    defensive_rebound_lost: stat.defensive_rebound_lost ?? 0,
+    gain: stat.gain ?? 0,
+    lost: stat.lost ?? 0,
   };
 };
