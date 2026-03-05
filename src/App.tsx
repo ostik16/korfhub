@@ -17,6 +17,8 @@ import RostersPage from "./pages/rosters";
 import RosterDetailPage from "./pages/rosters/[id]";
 import TeamsPage from "./pages/teams";
 import TeamDetailPage from "./pages/teams/[id]";
+import MatchesPage from "./pages/matches";
+import MatchDetailPage from "./pages/matches/[id]";
 import { TooltipProvider } from "./components/ui/tooltip";
 import type { Team } from "./routes/data-server/types";
 
@@ -214,6 +216,8 @@ export function App() {
           <Route path="rosters/:id" element={<RosterDetailPage />} />
           <Route path="teams" element={<TeamsPage />} />
           <Route path="teams/:id" element={<TeamDetailPage />} />
+          <Route path="matches" element={<MatchesPage />} />
+          <Route path="matches/:id" element={<MatchDetailPage />} />
           <Route path="scoreboard">
             <Route path="pv" element={<PV />} />
           </Route>

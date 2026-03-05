@@ -68,45 +68,140 @@ export const id: Endpoint = {
       return handle_error(e);
     }
   },
-  // async PUT(req: BunRequest<path>) {
-  //   try {
-  //     const id = req.params.id;
-  //     const team = db
-  //       .query<Team<string> | null, string>("SELECT * FROM teams WHERE id=?")
-  //       .get(id);
-  //     const json = await req.json();
-  //     const payload = UpdateTeamRequestSchema.parse(json);
+  async PUT(req: BunRequest<path>) {
+    try {
+      const id = req.params.id;
+      const json = await req.json();
 
-  //     if (team === null) {
-  //       return Response.error();
-  //     }
+      const current_match = db
+        .query<any, string>(
+          `
+        SELECT
+            m.id,
+            m.date,
+            m.slug,
+            m.period_duration,
+            m.period_count,
+            m.allowed_timeouts,
+            m.allowed_substitutions,
+            m.completed,
+            m.home_team_id,
+            m.away_team_id,
+            m.home_team_roster_id,
+            m.away_team_roster_id
+        FROM matches m
+        WHERE m.id=?
+        `,
+        )
+        .get(id);
 
-  //     const query_object = {
-  //       id,
-  //       name: payload.name ?? team.name,
-  //       short_name: payload.short_name ?? team.short_name,
-  //       logo: payload.logo ?? team.logo,
-  //       colors: payload.colors ? JSON.stringify(payload.colors) : team.colors,
-  //     };
+      if (current_match === null || current_match === undefined) {
+        return Response.json({ error: "Match not found" }, { status: 404 });
+      }
 
-  //     db.query(
-  //       `UPDATE teams
-  //         SET name=$name,
-  //           short_name=$short_name,
-  //           logo=$logo,
-  //           colors=$colors
-  //         WHERE id=$id`,
-  //     ).run(query_object);
+      const query_object = {
+        id,
+        home_team_id: json.home_team_id ?? current_match.home_team_id,
+        away_team_id: json.away_team_id ?? current_match.away_team_id,
+        home_team_roster_id:
+          json.home_team_roster_id !== undefined
+            ? json.home_team_roster_id
+            : current_match.home_team_roster_id,
+        away_team_roster_id:
+          json.away_team_roster_id !== undefined
+            ? json.away_team_roster_id
+            : current_match.away_team_roster_id,
+        date: json.date ?? current_match.date,
+        period_duration: json.period_duration ?? current_match.period_duration,
+        period_count: json.period_count ?? current_match.period_count,
+        allowed_timeouts:
+          json.allowed_timeouts !== undefined
+            ? json.allowed_timeouts
+            : current_match.allowed_timeouts,
+        allowed_substitutions:
+          json.allowed_substitutions !== undefined
+            ? json.allowed_substitutions
+            : current_match.allowed_substitutions,
+        completed:
+          json.completed !== undefined
+            ? json.completed
+            : current_match.completed,
+      };
 
-  //     const updated_team = prepare_team_response(
-  //       db
-  //         .query<Team<string> | null, string>("SELECT * FROM teams WHERE id=?")
-  //         .get(id),
-  //     );
+      db.query(
+        `UPDATE matches
+          SET home_team_id=$home_team_id,
+            away_team_id=$away_team_id,
+            home_team_roster_id=$home_team_roster_id,
+            away_team_roster_id=$away_team_roster_id,
+            date=$date,
+            period_duration=$period_duration,
+            period_count=$period_count,
+            allowed_timeouts=$allowed_timeouts,
+            allowed_substitutions=$allowed_substitutions,
+            completed=$completed
+          WHERE id=$id`,
+      ).run(query_object);
 
-  //     return Response.json(updated_team, { status: 200 });
-  //   } catch (e) {
-  //     return handle_error(e);
-  //   }
-  // },
+      const updated_query = db
+        .query(
+          `
+        SELECT
+            m.id,
+            m.date,
+            m.slug,
+            m.period_duration,
+            m.period_count,
+            m.allowed_timeouts,
+            m.allowed_substitutions,
+            m.completed,
+            home.id AS home_team_id,
+            home.slug AS home_team_slug,
+            home.name AS home_team_name,
+            home.short_name AS home_team_short_name,
+            home.color_1 AS home_team_color_1,
+            home.color_2 AS home_team_color_2,
+            home.logo AS home_team_logo,
+            home.roster AS home_team_roster,
+            away.id AS away_team_id,
+            away.slug AS away_team_slug,
+            away.name AS away_team_name,
+            away.short_name AS away_team_short_name,
+            away.color_1 AS away_team_color_1,
+            away.color_2 AS away_team_color_2,
+            away.logo AS away_team_logo,
+            away.roster AS away_team_roster
+        FROM matches m
+        LEFT JOIN teams home ON m.home_team_id = home.id
+        LEFT JOIN teams away ON m.away_team_id = away.id
+        WHERE m.id=?
+        `,
+        )
+        .get(id);
+
+      const res = ReadMatchResponseSchema.parse(updated_query);
+      const match = prepare_match_response(res);
+
+      return Response.json(match, { status: 200 });
+    } catch (e) {
+      return handle_error(e);
+    }
+  },
+  async DELETE(req: BunRequest<path>) {
+    try {
+      const id = req.params.id;
+
+      const match = db.query("SELECT * FROM matches WHERE id=?").get(id);
+
+      if (match === null) {
+        return Response.json({ error: "Match not found" }, { status: 404 });
+      }
+
+      db.query("DELETE FROM matches WHERE id=?").run(id);
+
+      return Response.json({ success: true }, { status: 200 });
+    } catch (e) {
+      return handle_error(e);
+    }
+  },
 };

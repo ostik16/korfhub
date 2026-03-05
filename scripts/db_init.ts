@@ -5,12 +5,12 @@ const db = new Database("./data/database.sqlite", {
   strict: true,
 });
 
-// db.run("DROP TABLE IF EXISTS teams");
-// db.run("DROP TABLE IF EXISTS rosters");
-// db.run("DROP TABLE IF EXISTS players");
-// db.run("DROP TABLE IF EXISTS matches");
-// db.run("DROP TABLE IF EXISTS events");
-// db.run("DROP TABLE IF EXISTS statistics");
+db.run("DROP TABLE IF EXISTS teams");
+db.run("DROP TABLE IF EXISTS rosters");
+db.run("DROP TABLE IF EXISTS players");
+db.run("DROP TABLE IF EXISTS matches");
+db.run("DROP TABLE IF EXISTS events");
+db.run("DROP TABLE IF EXISTS statistics");
 
 db.run(`
   CREATE TABLE IF NOT EXISTS teams (
@@ -70,13 +70,15 @@ db.run(`
     slug TEXT NOT NULL UNIQUE,
     home_team_id INTEGER NOT NULL,
     away_team_id INTEGER NOT NULL,
+    home_team_roster_id INTEGER,
+    away_team_roster_id INTEGER,
     date TEXT,
-    period_duration INTEGER NOT NULL, -- update the endpoints
-    period_count INTEGER NOT NULL, -- update the endpoints
+    period_duration INTEGER NOT NULL DEFAULT 600, -- update the endpoints
+    period_count INTEGER NOT NULL DEFAULT 2, -- update the endpoints
     -- also update time counting based on the latest event
-    allowed_timeouts INTEGER, -- update the endpoints
-    allowed_substitutions INTEGER, -- update the endpoints
-    completed BIT
+    allowed_timeouts INTEGER DEFAULT 2, -- update the endpoints
+    allowed_substitutions INTEGER DEFAULT 8, -- update the endpoints
+    completed BIT DEFAULT 0
   );
 `);
 

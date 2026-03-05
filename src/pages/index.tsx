@@ -44,6 +44,15 @@ const Index = () => {
       iconColor: "text-green-600",
     },
     {
+      title: "Matches",
+      description:
+        "Schedule and manage korfball matches and game configuration",
+      icon: Calendar,
+      href: "/matches",
+      color: "from-yellow-500/10 to-yellow-600/10",
+      iconColor: "text-yellow-600",
+    },
+    {
       title: "Controller",
       description: "Control live match scoreboard and game statistics",
       icon: Monitor,

@@ -34,7 +34,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import type { Match } from "@/routes/data-server/types";
-import { fetchAllMatches } from "@/services/match";
+import { listMatches } from "@/services/match";
 import { useForm, Controller } from "react-hook-form";
 import {
   Field,
@@ -60,7 +60,7 @@ const MatchSettings = () => {
 
   useEffect(() => {
     if (matchList.length) return;
-    fetchAllMatches().then((m) => setMatchList(m));
+    listMatches().then((m) => setMatchList(m));
   }, [isMatchModalOpen]);
 
   function handleMatchModalClose() {
