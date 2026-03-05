@@ -13,6 +13,10 @@ import EventController from "./pages/controller/event";
 import ControlsNavigation from "./pages/controller/navigation";
 import PlayersPage from "./pages/players";
 import PlayerDetailPage from "./pages/players/[id]";
+import RostersPage from "./pages/rosters";
+import RosterDetailPage from "./pages/rosters/[id]";
+import TeamsPage from "./pages/teams";
+import TeamDetailPage from "./pages/teams/[id]";
 import { TooltipProvider } from "./components/ui/tooltip";
 import type { Team } from "./routes/data-server/types";
 
@@ -206,6 +210,10 @@ export function App() {
           </Route>
           <Route path="players" element={<PlayersPage />} />
           <Route path="players/:id" element={<PlayerDetailPage />} />
+          <Route path="rosters" element={<RostersPage />} />
+          <Route path="rosters/:id" element={<RosterDetailPage />} />
+          <Route path="teams" element={<TeamsPage />} />
+          <Route path="teams/:id" element={<TeamDetailPage />} />
           <Route path="scoreboard">
             <Route path="pv" element={<PV />} />
           </Route>

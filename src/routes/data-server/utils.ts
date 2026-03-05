@@ -132,7 +132,7 @@ export const prepare_player_response = (player: any): Player | null => {
     number: player.number ?? null,
     birthday: player.birthday ?? null,
     picture: player.picutre ?? null,
-    // default_team_id: player.default_team_id ?? null,
+    default_team_id: player.default_team_id ?? null,
   };
 };
 
@@ -142,6 +142,8 @@ export const prepare_roster_response = (roster: any) => {
   return {
     id: roster.id,
     name: roster.name,
+    team_id: roster.team_id ?? null,
+    category: roster.category ?? null,
     player_1: roster.player_1,
     player_2: roster.player_2,
     player_3: roster.player_3,

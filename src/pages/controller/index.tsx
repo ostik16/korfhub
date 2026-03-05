@@ -14,29 +14,40 @@ import { Fragment } from "react/jsx-runtime";
 
 const Controller = () => {
   const { pathname } = useLocation();
-  const crumbs = pathname.split("/");
+  const crumbs = pathname.split("/").filter(Boolean);
   const currentLocation = crumbs.pop();
+
+  // Build the path incrementally for each crumb
+  const buildPath = (index: number) => {
+    return "/" + crumbs.slice(0, index + 1).join("/");
+  };
 
   return (
     <div>
       <div className={cn("invisible md:visible")}>
         <Breadcrumb>
           <BreadcrumbList>
-            {crumbs.map((crumb) => (
-              <Fragment key={crumb}>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <NavLink to="/">home</NavLink>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {crumbs.length > 0 && <BreadcrumbSeparator />}
+            {crumbs.map((crumb, index) => (
+              <Fragment key={`${crumb}-${index}`}>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <NavLink to={`/${crumb}`}>
-                      {crumb === "" ? "home" : crumb}
-                    </NavLink>
+                    <NavLink to={buildPath(index)}>{crumb}</NavLink>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
               </Fragment>
             ))}
-            <BreadcrumbItem>
-              <BreadcrumbPage>{currentLocation}</BreadcrumbPage>
-            </BreadcrumbItem>
+            {currentLocation && (
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentLocation}</BreadcrumbPage>
+              </BreadcrumbItem>
+            )}
           </BreadcrumbList>
         </Breadcrumb>
       </div>

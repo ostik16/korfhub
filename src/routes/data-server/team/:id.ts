@@ -74,4 +74,25 @@ export const id: Endpoint = {
       return handle_error(e);
     }
   },
+  async DELETE(req: BunRequest<path>) {
+    try {
+      const id = req.params.id;
+
+      const team = prepare_team_response(
+        db
+          .query<Team<string> | null, string>("SELECT * FROM teams WHERE id=?")
+          .get(id),
+      );
+
+      if (team === null) {
+        return Response.json({ error: "Team not found" }, { status: 404 });
+      }
+
+      db.query("DELETE FROM teams WHERE id=?").run(id);
+
+      return Response.json({ success: true }, { status: 200 });
+    } catch (e) {
+      return handle_error(e);
+    }
+  },
 };

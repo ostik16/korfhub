@@ -30,6 +30,8 @@ db.run(`
   CREATE TABLE IF NOT EXISTS rosters (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    team_id INTEGER,
+    category TEXT,
     player_1 INTEGER NOT NULL,
     player_2 INTEGER NOT NULL,
     player_3 INTEGER NOT NULL,
@@ -45,7 +47,8 @@ db.run(`
     player_13 INTEGER,
     player_14 INTEGER,
     player_15 INTEGER,
-    player_16 INTEGER
+    player_16 INTEGER,
+    FOREIGN KEY (team_id) REFERENCES teams(id)
   )
 `);
 

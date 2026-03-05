@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import z from "zod";
 import { useParams, useNavigate } from "react-router";
+import PageWithBreadcrumbs from "@/components/layout/PageWithBreadcrumbs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -75,18 +76,8 @@ const PlayerDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 lg:p-6">
-      <div className="max-w-2xl mx-auto space-y-6">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/players")}
-          className="gap-2"
-        >
-          <ArrowLeft size={18} />
-          Back to Players
-        </Button>
-
+    <>
+      <PageWithBreadcrumbs className="max-w-2xl">
         {/* Player Card */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-4">
@@ -152,7 +143,7 @@ const PlayerDetailPage = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </PageWithBreadcrumbs>
 
       {/* Edit Player Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -168,7 +159,7 @@ const PlayerDetailPage = () => {
           />
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 

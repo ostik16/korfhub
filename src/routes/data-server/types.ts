@@ -24,6 +24,8 @@ export type Player = z.infer<typeof PlayerSchema>;
 export const RosterSchema = z.object({
   id: RosterId,
   name: z.string(),
+  team_id: TeamIdSchema.nullable(),
+  category: z.string().nullable(),
   player_1: PlayerId,
   player_2: PlayerId,
   player_3: PlayerId,
@@ -93,6 +95,8 @@ export const ListPlayersRequestSchema = z.object({
 
 export const CreateRosterRequestSchema = z.object({
   name: z.string(),
+  team_id: TeamIdSchema.optional().nullable(),
+  category: z.string().optional().nullable(),
   player_1: PlayerId,
   player_2: PlayerId,
   player_3: PlayerId,
@@ -113,6 +117,8 @@ export const CreateRosterRequestSchema = z.object({
 
 export const UpdateRosterRequestSchema = z.object({
   name: z.string().optional(),
+  team_id: TeamIdSchema.optional().nullable(),
+  category: z.string().optional().nullable(),
   player_1: PlayerId.optional(),
   player_2: PlayerId.optional(),
   player_3: PlayerId.optional(),
@@ -294,6 +300,7 @@ export const ReadEventResponseSchema = z.object({
 export type Team<T = string[]> = Omit<z.infer<typeof TeamSchema>, "colors"> & {
   colors: T;
 };
+export type Roster = z.infer<typeof RosterSchema>;
 export type Match = z.infer<typeof MatchSchema>;
 export type MatchId = z.infer<typeof MatchIdSchema>;
 export type Event = z.infer<typeof EventSchema>;

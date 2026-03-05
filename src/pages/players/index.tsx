@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import PageWithBreadcrumbs from "@/components/layout/PageWithBreadcrumbs";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -90,8 +91,8 @@ const PlayersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 lg:p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <>
+      <PageWithBreadcrumbs>
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -198,7 +199,7 @@ const PlayersPage = () => {
             )}
           </CardContent>
         </Card>
-      </div>
+      </PageWithBreadcrumbs>
 
       {/* Create Player Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -232,7 +233,7 @@ const PlayersPage = () => {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 

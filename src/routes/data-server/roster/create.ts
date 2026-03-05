@@ -16,6 +16,8 @@ export const create: Endpoint = {
       const query_object = {
         id: null,
         name: payload.name,
+        team_id: payload.team_id ?? null,
+        category: payload.category ?? null,
         player_1: payload.player_1,
         player_2: payload.player_2,
         player_3: payload.player_3,
@@ -36,7 +38,7 @@ export const create: Endpoint = {
 
       const { lastInsertRowid } = db
         .query(
-          "INSERT INTO rosters VALUES ($id, $name, $player_1, $player_2, $player_3, $player_4, $player_5, $player_6, $player_7, $player_8, $player_9, $player_10, $player_11, $player_12, $player_13, $player_14, $player_15, $player_16)",
+          "INSERT INTO rosters VALUES ($id, $name, $team_id, $category, $player_1, $player_2, $player_3, $player_4, $player_5, $player_6, $player_7, $player_8, $player_9, $player_10, $player_11, $player_12, $player_13, $player_14, $player_15, $player_16)",
         )
         .run(query_object);
 
