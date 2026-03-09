@@ -29,9 +29,12 @@ const set: SSRoute<{ id: number }> = {
       );
       const events: Event[] = await events_req.json();
 
+      const period_count = match.match_info.period_count;
+      const period_duration = match.match_info.period_duration;
+
       let home_score = 0;
       let away_score = 0;
-      let time_remaining = state.period_duration;
+      let time_remaining = period_duration;
       let period = 1;
 
       const home_team_id = match.home_team.id;
@@ -40,9 +43,9 @@ const set: SSRoute<{ id: number }> = {
       events.forEach((event, index) => {
         if (index === 0) {
           // this should be latest event by game time
-          period = Math.ceil(event.match_time / state.period_duration);
+          period = Math.ceil(event.match_time / period_duration);
           time_remaining =
-            state.period_duration - (event.match_time % state.period_duration);
+            period_duration - (event.match_time % period_duration);
         }
 
         if (event.type !== "score") {
@@ -60,9 +63,13 @@ const set: SSRoute<{ id: number }> = {
       return {
         ...state,
         ...match,
+        home_team_roster: match.home_team_roster,
+        away_team_roster: match.away_team_roster,
         home_score,
         away_score,
         period,
+        period_count,
+        period_duration,
         time_remaining,
         id,
       };

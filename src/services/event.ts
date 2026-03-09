@@ -96,17 +96,24 @@ export const listMatchEvents = async (
 // UPDATE
 //
 
-export const updateEvent = async (event: Event) => {
+export const updateEvent = async (event: Event): Promise<Event> => {
   const verified = UpdateEventRequestSchema.parse(event);
   const body = JSON.stringify({ ...verified });
 
-  await fetch(
+  const request = await fetch(
     `http://${window.location.hostname}:3000/api/v1/event/${event.id}`,
     {
       method: "PUT",
       body,
     },
   );
+
+  if (!request.ok) {
+    throw new Error("Failed to update event");
+  }
+
+  const res = await request.json();
+  return res;
 };
 
 //

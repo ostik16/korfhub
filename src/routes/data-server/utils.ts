@@ -65,11 +65,54 @@ export const prepare_match_response = (match: any): Match | null => {
     return null;
   }
 
-  const home_team_roster = match.home_team_roster
-    ? JSON.parse(match.home_team_roster)
+  const home_team_roster = match.home_roster_id
+    ? {
+        id: match.home_roster_id,
+        name: match.home_roster_name,
+        team_id: match.home_roster_team_id,
+        category: match.home_roster_category,
+        player_1: match.home_roster_player_1,
+        player_2: match.home_roster_player_2,
+        player_3: match.home_roster_player_3,
+        player_4: match.home_roster_player_4,
+        player_5: match.home_roster_player_5,
+        player_6: match.home_roster_player_6,
+        player_7: match.home_roster_player_7,
+        player_8: match.home_roster_player_8,
+        player_9: match.home_roster_player_9,
+        player_10: match.home_roster_player_10,
+        player_11: match.home_roster_player_11,
+        player_12: match.home_roster_player_12,
+        player_13: match.home_roster_player_13,
+        player_14: match.home_roster_player_14,
+        player_15: match.home_roster_player_15,
+        player_16: match.home_roster_player_16,
+      }
     : null;
-  const away_team_roster = match.away_team_roster
-    ? JSON.parse(match.away_team_roster)
+
+  const away_team_roster = match.away_roster_id
+    ? {
+        id: match.away_roster_id,
+        name: match.away_roster_name,
+        team_id: match.away_roster_team_id,
+        category: match.away_roster_category,
+        player_1: match.away_roster_player_1,
+        player_2: match.away_roster_player_2,
+        player_3: match.away_roster_player_3,
+        player_4: match.away_roster_player_4,
+        player_5: match.away_roster_player_5,
+        player_6: match.away_roster_player_6,
+        player_7: match.away_roster_player_7,
+        player_8: match.away_roster_player_8,
+        player_9: match.away_roster_player_9,
+        player_10: match.away_roster_player_10,
+        player_11: match.away_roster_player_11,
+        player_12: match.away_roster_player_12,
+        player_13: match.away_roster_player_13,
+        player_14: match.away_roster_player_14,
+        player_15: match.away_roster_player_15,
+        player_16: match.away_roster_player_16,
+      }
     : null;
 
   const match_info = {
@@ -107,15 +150,41 @@ export const prepare_event_response = (event: any): Event | null => {
     return null;
   }
 
+  const player_1_obj = event.player_1_id
+    ? {
+        id: event.player_1_id,
+        slug: event.player_1_slug ?? "",
+        name: event.player_1_name,
+        number: event.player_1_number,
+        picture: null,
+        birthday: null,
+        default_team_id: null,
+      }
+    : null;
+
+  const player_2_obj = event.player_2_id
+    ? {
+        id: event.player_2_id,
+        slug: event.player_2_slug ?? "",
+        name: event.player_2_name,
+        number: event.player_2_number,
+        picture: null,
+        birthday: null,
+        default_team_id: null,
+      }
+    : null;
+
   return {
     id: event.id,
     match: event.match,
     team,
-    player_1: null,
-    player_2: null,
-    score_type: event.score_type,
-    card_type: null,
-    note: null,
+    player_1: event.player_1 ?? null,
+    player_2: event.player_2 ?? null,
+    player_1_obj,
+    player_2_obj,
+    score_type: event.score_type ?? null,
+    card_type: event.card_type ?? null,
+    note: event.note ?? null,
     type: event.type,
     date: event.date,
     match_time: event.match_time,

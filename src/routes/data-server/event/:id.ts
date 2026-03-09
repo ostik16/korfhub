@@ -34,9 +34,14 @@ export const id: Endpoint = {
         return Response.error();
       }
 
-      const query_object = {
-        ...event,
-        ...payload,
+      const query_object: any = {
+        id,
+        player_1: "player_1" in payload ? payload.player_1 : event.player_1,
+        player_2: "player_2" in payload ? payload.player_2 : event.player_2,
+        score_type:
+          "score_type" in payload ? payload.score_type : event.score_type,
+        card_type: "card_type" in payload ? payload.card_type : event.card_type,
+        note: "note" in payload ? payload.note : event.note,
       };
 
       db.query(

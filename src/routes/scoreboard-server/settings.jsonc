@@ -9,12 +9,14 @@
     "logo": null,
     "colors": ["#ff0000", "#000000"],
   },
+  "home_team_roster": null,
   "away_score": 0,
   "away_team": {
     "name": "AWAY",
     "logo": null,
     "colors": ["#00ff00", "#000000"],
   },
+  "away_team_roster": null,
   "time_remaining": 600,
   "time_remaining_formatted": "10:00",
   "time_started_at": null, // will be timestamp if time is running

@@ -76,7 +76,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import TeamControls from "@/components/controller/TeamControls";
 import { Dialog } from "@/components/ui/dialog";
-import UpdateScoreEventForm from "@/components/form/UpdateScoreEventForm";
+import UpdateEventForm from "@/components/form/UpdateEventForm";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -85,9 +85,6 @@ const AdvancedController = () => {
 
   const [events, setEvents] = useState<Event[]>([]);
   const [editingEvent, setEditingEvent] = useState<Event>();
-  const [updateForm, setUpdateForm] = useState<EventType>(
-    EventTypeSchema.def.entries.score,
-  );
 
   useEffect(() => {
     if (!state || !state.id) return;
@@ -113,7 +110,6 @@ const AdvancedController = () => {
 
   function handleUpdateEvent(event: Event) {
     setEditingEvent(event);
-    setUpdateForm(event.type);
   }
 
   function getEventTypeActionIcon(type: EventType) {
@@ -215,7 +211,7 @@ const AdvancedController = () => {
                         <div
                           style={
                             {
-                              "--gradient": `180deg,${e.team?.colors[0]},${e.team?.colors[1]}`,
+                              "--gradient": `180deg,${e.team?.colors?.[0] ?? "#000000"},${e.team?.colors?.[1] ?? "#000000"}`,
                             } as React.CSSProperties
                           }
                           className={cn(
@@ -225,7 +221,98 @@ const AdvancedController = () => {
 
                         {e.type}
                       </TableCell>
-                      <TableCell>{e.score_type}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {e.type === "score" && (
+                            <div>
+                              <div className="font-medium capitalize">
+                                {e.score_type?.replace("-", " ")}
+                              </div>
+                              {e.player_1_obj && (
+                                <div className="text-sm text-muted-foreground">
+                                  {e.player_1_obj.number &&
+                                    `#${e.player_1_obj.number} `}
+                                  {e.player_1_obj.name}
+                                </div>
+                              )}
+                              {e.player_2_obj && (
+                                <div className="text-xs text-muted-foreground">
+                                  Assist:{" "}
+                                  {e.player_2_obj.number &&
+                                    `#${e.player_2_obj.number} `}
+                                  {e.player_2_obj.name}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {e.type === "card" && (
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className="w-3 h-4 rounded-sm border"
+                                  style={{
+                                    backgroundColor:
+                                      e.card_type === "yellow"
+                                        ? "#fbbf24"
+                                        : e.card_type === "red"
+                                          ? "#ef4444"
+                                          : e.card_type === "green"
+                                            ? "#22c55e"
+                                            : "#ffffff",
+                                    borderColor:
+                                      e.card_type === "white"
+                                        ? "#d1d5db"
+                                        : "transparent",
+                                  }}
+                                />
+                                <span className="capitalize font-medium">
+                                  {e.card_type}
+                                </span>
+                              </div>
+                              {e.player_1_obj && (
+                                <div className="text-sm text-muted-foreground mt-1">
+                                  {e.player_1_obj.number &&
+                                    `#${e.player_1_obj.number} `}
+                                  {e.player_1_obj.name}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {e.type === "substitution" && (
+                            <div>
+                              <div className="font-medium">
+                                Player substitution
+                              </div>
+                              {e.player_1_obj && (
+                                <div className="text-sm text-muted-foreground">
+                                  In:{" "}
+                                  {e.player_1_obj.number &&
+                                    `#${e.player_1_obj.number} `}
+                                  {e.player_1_obj.name}
+                                </div>
+                              )}
+                              {e.player_2_obj && (
+                                <div className="text-sm text-muted-foreground">
+                                  Out:{" "}
+                                  {e.player_2_obj.number &&
+                                    `#${e.player_2_obj.number} `}
+                                  {e.player_2_obj.name}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {e.type === "timeout" && (
+                            <div className="text-muted-foreground">
+                              Team timeout
+                            </div>
+                          )}
+                          {e.note && (
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {e.note}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
                           <Button
@@ -233,6 +320,7 @@ const AdvancedController = () => {
                             size="icon"
                             className="size-8 w-16"
                             onClick={() => handleUpdateEvent(e)}
+                            disabled={e.type === "timeout"}
                           >
                             <Edit />
                             <span className="sr-only">Edit</span>
@@ -251,6 +339,7 @@ const AdvancedController = () => {
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem
                                 onClick={() => handleUpdateEvent(e)}
+                                disabled={e.type === "timeout"}
                               >
                                 Edit
                               </DropdownMenuItem>
@@ -274,9 +363,12 @@ const AdvancedController = () => {
         </div>
       </div>
       {/* create dialog form to update event information */}
-      <Dialog open={!!editingEvent}>
-        {editingEvent?.type === EventTypeSchema.def.entries.score && (
-          <UpdateScoreEventForm
+      <Dialog
+        open={!!editingEvent}
+        onOpenChange={(open) => !open && handleCloseModal()}
+      >
+        {editingEvent && (
+          <UpdateEventForm
             closeModal={handleCloseModal}
             event={editingEvent}
             setEvents={setEvents}

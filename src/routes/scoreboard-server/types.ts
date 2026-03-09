@@ -20,8 +20,10 @@ export type SSState = {
   period_count: number;
   period_duration: number;
   home_team: Team;
+  home_team_roster: import("../data-server/types").Roster | null;
   home_score: number;
   away_team: Team;
+  away_team_roster: import("../data-server/types").Roster | null;
   away_score: number;
   time_remaining: number;
   time_remaining_formatted: string;
